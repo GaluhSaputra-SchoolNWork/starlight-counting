@@ -14,7 +14,7 @@ Game Project Assets:
 
 Battle System:
   ✓ load game assets
-  ☐ create battle scene layout
+  ✓ create battle scene layout
   ☐ create dialog menu
   ☐ create option menu
   ☐ create monster attack move list
