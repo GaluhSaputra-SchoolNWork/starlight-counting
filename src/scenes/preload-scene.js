@@ -7,10 +7,11 @@ export class PreloadScene extends Phaser.Scene {
         super({
             key: SCENE_KEYS.PRELOAD_SCENE,
         });
-        console.log(SCENE_KEYS.PRELOAD_SCENE);
     }
 
     preload() {
+        console.log(`[${PreloadScene.name}:preload] invoked`)
+
         const monsterTamerAssetPath = 'assets/images/monster-tamer';
         const kenneysAssetPath = 'assets/images/kenneys-assets';
 
@@ -43,17 +44,16 @@ export class PreloadScene extends Phaser.Scene {
         //monster assets
         this.load.image(
             MONSTER_ASSET_KEYS.CARNODUSK, 
-            `${monsterTamerAssetPath}/monsters/iguanignite.png`
+            `${monsterTamerAssetPath}/monsters/carnodusk.png`
         );
         this.load.image(
             MONSTER_ASSET_KEYS.IGUANIGNITE, 
-            `${monsterTamerAssetPath}/monsters/carnodusk.png`
+            `${monsterTamerAssetPath}/monsters/iguanignite.png`
         );
     }
 
     create() {
-        console.log('create');
-        console.log(this.textures.get('background'));
-        this.add.image(0, 0, BATTLE_BACKGROUND_ASSET_KEYS.FOREST).setOrigin(0);
+        console.log(`[${PreloadScene.name}:create] invoked`)
+        this.scene.start(SCENE_KEYS.BATTLE_SCENE);
     }
 }
