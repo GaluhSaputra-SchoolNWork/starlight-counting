@@ -4,22 +4,13 @@ import {
     HEALTH_BAR_ASSET_KEYS, 
     MONSTER_ASSET_KEYS 
 } from "../assets/asset-keys.js";
+import { BattleMenu } from "../battle/ui/menu/battle-menu.js";
 import Phaser from "../lib/phaser.js";
 import { SCENE_KEYS } from "./scene-keys.js";
 
-const BATTLE_MENU_OPTIONS = Object.freeze({
-    FIGHT: 'FIGHT',
-    SWITCH: 'SWITCH',
-    ITEM: 'ITEM',
-    FLEE: 'FLEE',
-});
-
-const battleUiTextStyle = {
-    color: 'black',
-    fontSize: '30px',
-}
-
 export class BattleScene extends Phaser.Scene {
+    #battleMenu;
+    
     constructor() {
         super({
             key: SCENE_KEYS.BATTLE_SCENE,
@@ -97,21 +88,8 @@ export class BattleScene extends Phaser.Scene {
         ]);
 
         //render out the main info and sub info panes
-        this.#createMainInfoPane();
-        this.add.container(520, 448, [
-            this.#createMainInfoSubPane(),
-            this.add.text(55, 22, BATTLE_MENU_OPTIONS.FIGHT, battleUiTextStyle),
-            this.add.text(240, 22, BATTLE_MENU_OPTIONS.SWITCH, battleUiTextStyle),
-            this.add.text(55, 70, BATTLE_MENU_OPTIONS.ITEM, battleUiTextStyle),
-            this.add.text(240, 70, BATTLE_MENU_OPTIONS.FLEE, battleUiTextStyle),
-        ]);
-
-        this.add.container(0, 448, [
-            this.add.text(55, 22, 'slash', battleUiTextStyle),
-            this.add.text(240, 22, 'growl', battleUiTextStyle),
-            this.add.text(55, 70, '-', battleUiTextStyle),
-            this.add.text(240, 70, '-', battleUiTextStyle),
-        ])
+        this.#battleMenu = new BattleMenu(this);
+        this.#battleMenu.showMainBattleMenu();
     }
 
     #createHealthBar(x, y) {
@@ -131,30 +109,5 @@ export class BattleScene extends Phaser.Scene {
             .setScale(1, scaleY);
 
         return this.add.container(x, y, [leftCap, middle, rightCap]);
-    }
-
-    #createMainInfoPane() {
-        const padding = 4;
-        const rectHeight = 124;
-        this.add
-            .rectangle(
-                padding, 
-                this.scale.height - rectHeight - padding, 
-                this.scale.width - padding * 2, 
-                rectHeight, 
-                0xede4f3, 
-                1
-            )
-            .setOrigin(0)
-            .setStrokeStyle(8, 0xe4434a, 1);
-    }
-
-    #createMainInfoSubPane() {
-        const rectWidth = 500;
-        const rectHeight = 124;
-         return this.add
-            .rectangle(0, 0, rectWidth, rectHeight, 0xede4f3, 1)
-            .setOrigin(0)
-            .setStrokeStyle(8, 0x905ac2, 1);
     }
 }
