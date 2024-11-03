@@ -36,6 +36,12 @@ export class BattleMenu {
     #selectedAttackMenuOption;
     /** @type {import('./battle-menu-options.js').ActiveBattleMenu} */
     #activeBattleMenu;
+    /** @type {string[]} */
+    #queuedInfoPanelMessages;
+    /** @type {() => void | undefined} */
+    #queuedInfoPanelCallback;
+    /** @type {boolean} */
+    #waitingForPlayerInput;
 
     /**
      * 
@@ -46,6 +52,9 @@ export class BattleMenu {
         this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_MAIN;
         this.#selectedBattleMenuOption = BATTLE_MENU_OPTIONS.FIGHT;
         this.#selectedAttackMenuOption = ATTACK_MOVE_OPTIONS.MOVE_1;
+        this.#queuedInfoPanelCallback = undefined;
+        this.#queuedInfoPanelMessages = [];
+        this.#waitingForPlayerInput = false;
         this.#createMainInfoPane();
         this.#createMainBattleMenu();
         this.#createMonsterAttackSubMenu();
@@ -82,15 +91,24 @@ export class BattleMenu {
      * @param {import('../../../common/direction.js').Direction | 'OK' | 'CANCEL'} input 
      */
     handlePlayerInput(input) {
-        console.log(input);
+        if (this.#waitingForPlayerInput && (input === 'CANCEL' || input === 'OK')) {
+            this.#updateInfoPaneWithMessage();
+            return;
+        }
+
         if (input === 'CANCEL') {
-            this.hideMonsterAttackSubMenu();
-            this.showMainBattleMenu();
+            this.showMonsterAttackSubMenu();
             return;
         }
         if (input === 'OK') {
-            this.hideMainBattleMenu();
-            this.showMonsterAttackSubMenu();
+            if (this.#activeBattleMenu === ACTIVE_BATTLE_MENU.BATTLE_MAIN) {
+                this.#handlePlayerChooseMainBattleOption();
+                return;
+            }
+            if(this.#activeBattleMenu === ACTIVE_BATTLE_MENU.BATTLE_MOVE_SELECT) {
+                //TODO
+                return;
+            }
             return;
         }
 
@@ -98,6 +116,37 @@ export class BattleMenu {
         this.#moveMainBattleMenuCursor();
         this.#updateSelectedMoveOptionFromInput(input);
         this.#moveMoveSelectBattleMenuCursor();
+    }
+
+    /**
+     * 
+     * @param {string[]} messages 
+     * @param {() => void} [callback]
+     */
+    updateInfoPanelMessagesAndWaitForInput(messages, callback) {
+        this.#queuedInfoPanelMessages = messages;
+        this.#queuedInfoPanelCallback = callback;
+
+        this.#updateInfoPaneWithMessage();
+    }
+
+    #updateInfoPaneWithMessage() {
+        this.#waitingForPlayerInput = false;
+        this.#battleTextGameObjectLine1.setText('').setAlpha(1);
+
+        //check if all messages have been displayed from the queue and call the callback
+        if (this.#queuedInfoPanelMessages.length === 0) {
+            if(this.#queuedInfoPanelCallback) {
+                this.#queuedInfoPanelCallback();
+                this.#queuedInfoPanelCallback = undefined;
+            }
+            return;
+        }
+
+        //get first message from queue and animate message
+        const messageToDisplay = this.#queuedInfoPanelMessages.shift();
+        this.#battleTextGameObjectLine1.setText(messageToDisplay);
+        this.#waitingForPlayerInput = true;
     }
 
     #createMainBattleMenu() {
@@ -350,5 +399,36 @@ export class BattleMenu {
             default:
                 exhaustiveGuard(this.#selectedAttackMenuOption);
         }
+    }
+
+    #switchToMainBattleMenu() {
+        this.hideMonsterAttackSubMenu();
+        this.showMainBattleMenu();
+    }
+
+    #handlePlayerChooseMainBattleOption() {
+        this.hideMainBattleMenu();
+
+        if(this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.FIGHT) {
+            this.showMonsterAttackSubMenu;
+            return;
+        }
+
+        if(this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.ITEM) {
+            //TODO
+            return;
+        }
+
+        if(this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.SWITCH) {
+            //TODO
+            return;
+        }
+
+        if(this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.FLEE) {
+            //TODO
+            return;
+        }
+
+        exhaustiveGuard(this.#selectedBattleMenuOption);
     }
 }
