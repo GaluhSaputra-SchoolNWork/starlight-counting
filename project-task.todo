@@ -1,16 +1,16 @@
 Project Setup:
-  ✓ create basic html page with minor css
+  ✓ create basic html page with minor css @done(30 Oct 2024 07:30)
   ✓ running project on local web server
-  ✓ add phaser 3 library
-  ✓ create a basic phaser 3 game instance
-  ✓ add jsconfig to get phaser 3 types and intellisense
+  ✓ add phaser 3 library @done(30 Oct 2024 07:35)
+  ✓ create a basic phaser 3 game instance @done(30 Oct 2024 07:40)
+  ✓ add jsconfig to get phaser 3 types and intellisense @done(30 Oct 2024 07:45)
 
 Game Project Assets:
-  ✓ download game assets and add to project
-  ✓ show links to where assets can be found
+  ✓ download game assets and add to project @done(30 Oct 2024 07:50)
+  ✓ show links to where assets can be found @done(30 Oct 2024 07:50)
 
 Battle System:
-  ✓ load game assets
+  ✓ load game assets @done(30 Oct 2024 07:55)
   ✓ create battle scene layout
   ✓ create dialog menu
   ✓ create option menu
