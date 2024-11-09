@@ -17,8 +17,8 @@ Battle System:
   ✓ create monster attack move list @done(3 Nov 2024 07:50)
   ✓ handle player input @done(9 Nov 2024 09:40)
   ☐ code optimization - move logic to components
-    ☐ create health component
-    ☐ create background component @done(9 Nov 2024 10:55)
+    ✓ create health component @done(9 Nov 2024 12:28)
+    ✓ create background component @done(9 Nov 2024 10:55)
     ☐ create monster components
   ☐ adding basic attack logic
   ☐ taking damage and monster knock out
