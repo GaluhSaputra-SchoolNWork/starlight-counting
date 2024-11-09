@@ -12,10 +12,10 @@ Game Project Assets:
 Battle System:
   ✓ load game assets
   ✓ create battle scene layout
-  ☐ create dialog menu
-  ☐ create option menu
-  ☐ create monster attack move list
-  ☐ handle player input
+  ✓ create dialog menu
+  ✓ create option menu
+  ✓ create monster attack move list
+  ✓ handle player input
   ☐ code optimization - move logic to components
     ☐ create health component
     ☐ create background component
