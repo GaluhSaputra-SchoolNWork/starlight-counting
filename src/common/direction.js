@@ -10,4 +10,3 @@ export const DIRECTION = Object.freeze({
     DOWN: 'DOWN',
     NONE: 'NONE',
 });
-
