@@ -19,7 +19,7 @@ Battle System:
   ☐ code optimization - move logic to components
     ✓ create health component @done(9 Nov 2024 12:28)
     ✓ create background component @done(9 Nov 2024 10:55)
-    ☐ create monster components
+    ✓ create monster components @done(10 Nov 2024 10:10)
   ☐ adding basic attack logic
   ☐ taking damage and monster knock out
   ☐ battle state machine
