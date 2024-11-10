@@ -8,7 +8,7 @@ export const BATTLE_MENU_OPTIONS = Object.freeze({
     SWITCH: 'SWITCH',
     ITEM: 'ITEM',
     FLEE: 'FLEE',
-});
+})
 
 /**
  *  @typedef {keyof typeof ATTACK_MOVE_OPTIONS} AttackMoveOptions
@@ -20,7 +20,7 @@ export const ATTACK_MOVE_OPTIONS = Object.freeze({
     MOVE_2: 'MOVE_2',
     MOVE_3: 'MOVE_3',
     MOVE_4: 'MOVE_4',
-});
+})
 
 /**
  *  @typedef {keyof typeof ACTIVE_BATTLE_MENU} ActiveBattleMenu
@@ -33,4 +33,4 @@ export const ACTIVE_BATTLE_MENU = Object.freeze({
     BATTLE_ITEM: 'BATTLE_ITEM',
     BATTLE_SWITCH: 'BATTLE_SWITCH',
     BATTLE_FLEE: 'BATTLE_FLEE',
-});
+})

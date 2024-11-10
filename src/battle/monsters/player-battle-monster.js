@@ -1,4 +1,4 @@
-import { BattleMonster } from "./battle-monster.js";
+import { BattleMonster } from "./battle-monster.js"
 
 /** @type {import("../../types/typedef.js").Coordinate} */
 const PLAYER_POSITION = Object.freeze({
@@ -8,17 +8,17 @@ const PLAYER_POSITION = Object.freeze({
 
 export class PlayerBattleMonster extends BattleMonster {
     /** @type {Phaser.GameObjects.Text} */
-    #healthBarTextGameObject;
+    #healthBarTextGameObject
     /**
      * 
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
      */
     constructor(config) {
-        super(config, PLAYER_POSITION);
-        this._phaserGameObject.setFlipX(true);
-        this._phaserHealthBarGameContainer.setPosition(556, 318);
+        super(config, PLAYER_POSITION)
+        this._phaserGameObject.setFlipX(true)
+        this._phaserHealthBarGameContainer.setPosition(556, 318)
 
-        this.#addHealthBarComponents();
+        this.#addHealthBarComponents()
     }
 
     #setHealthBarText() {
@@ -31,10 +31,10 @@ export class PlayerBattleMonster extends BattleMonster {
             color: '#7E3D3F',
             fontSize: '16px',
         })
-        .setOrigin(1, 0);
-        this.#setHealthBarText();
+        .setOrigin(1, 0)
+        this.#setHealthBarText()
 
-        this._phaserHealthBarGameContainer.add(this.#healthBarTextGameObject);
+        this._phaserHealthBarGameContainer.add(this.#healthBarTextGameObject)
     }
 
     /**
@@ -42,8 +42,8 @@ export class PlayerBattleMonster extends BattleMonster {
      * @param {() => void} [callback] 
      */
     takeDamage(damage, callback) {
-        super.takeDamage(damage, callback);
-        this.#setHealthBarText();
+        super.takeDamage(damage, callback)
+        this.#setHealthBarText()
     }
 }
 
