@@ -59,14 +59,14 @@ export class HealthBar {
             .image(this.#leftShadowCap.x + this.#leftShadowCap.width, y, HEALTH_BAR_ASSET_KEYS.MIDDLE_SHADOW)
             .setOrigin(0, 0.5)
             .setScale(1, this.#scaleY)
-            this.#middleShadow.displayWidth = this.#fullWidth
+        this.#middleShadow.displayWidth = this.#fullWidth
 
         this.#rightShadowCap = this.#scene.add
             .image(this.#middleShadow.x + this.#middleShadow.displayWidth, y, HEALTH_BAR_ASSET_KEYS.RIGHT_CAP_SHADOW)
             .setOrigin(0, 0.5)
             .setScale(1, this.#scaleY)
 
-            this.#healthBarContainer.add([this.#leftShadowCap, this.#middleShadow, this.#rightShadowCap])
+        this.#healthBarContainer.add([this.#leftShadowCap, this.#middleShadow, this.#rightShadowCap])
     }
 
     /**
@@ -89,7 +89,7 @@ export class HealthBar {
             .setOrigin(0, 0.5)
             .setScale(1, this.#scaleY)
 
-            this.#healthBarContainer.add([this.#leftCap, this.#middle, this.#rightCap])
+        this.#healthBarContainer.add([this.#leftCap, this.#middle, this.#rightCap])
     }
 
     /**

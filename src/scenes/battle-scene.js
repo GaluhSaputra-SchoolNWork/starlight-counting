@@ -23,30 +23,30 @@ const BATTLE_STATES = Object.freeze({
 
 
 export class BattleScene extends Phaser.Scene {
-    /** @type {BattleMenu} */
-    #battleMenu
-    /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
-    #cursorKeys
-    /** @type {EnemyBattleMonster} */
-    #activeEnemyMonster
-    /** @type {PlayerBattleMonster} */
-    #activePlayerMonster
-    /** @type {number} */
-    #activePlayerAttackIndex
-    /** @type {StateMachine} */
-    #battleStateMachine
+  /** @type {BattleMenu} */
+  #battleMenu
+  /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
+  #cursorKeys
+  /** @type {EnemyBattleMonster} */
+  #activeEnemyMonster
+  /** @type {PlayerBattleMonster} */
+  #activePlayerMonster
+  /** @type {number} */
+  #activePlayerAttackIndex
+  /** @type {StateMachine} */
+  #battleStateMachine
 
-constructor() {
+  constructor() {
     super({
-        key: SCENE_KEYS.BATTLE_SCENE,
+      key: SCENE_KEYS.BATTLE_SCENE,
     })
-}
+  }
 
-init() {
-  this.#activePlayerAttackIndex = -1
-}
+  init() {
+    this.#activePlayerAttackIndex = -1
+  }
 
-create() {
+  create() {
     console.log(`[${BattleScene.name}:create] invoked`)
     // create main background
     const background = new Background(this)
@@ -54,34 +54,34 @@ create() {
 
     // render out the player and enemy monsters
     this.#activeEnemyMonster = new EnemyBattleMonster({
-        scene: this,
-        monsterDetails: {
-            name: MONSTER_ASSET_KEYS.CARNODUSK,
-            assetKey: MONSTER_ASSET_KEYS.CARNODUSK,
-            assetFrame: 0,
-            currentHp: 25,
-            maxHp: 25,
-            attackIds: [1],
-            baseAttack: 5,
-            currentLevel: 5,
-        },
-        skipBattleAnimations: SKIP_BATTLE_ANIMATIONS
+      scene: this,
+      monsterDetails: {
+        name: MONSTER_ASSET_KEYS.CARNODUSK,
+        assetKey: MONSTER_ASSET_KEYS.CARNODUSK,
+        assetFrame: 0,
+        currentHp: 25,
+        maxHp: 25,
+        attackIds: [1],
+        baseAttack: 5,
+        currentLevel: 5,
+      },
+      skipBattleAnimations: SKIP_BATTLE_ANIMATIONS
     })
 
     this.#activePlayerMonster = new PlayerBattleMonster({
       scene: this,
       monsterDetails: {
-          name: MONSTER_ASSET_KEYS.IGUANIGNITE,
-          assetKey: MONSTER_ASSET_KEYS.IGUANIGNITE,
-          assetFrame: 0,
-          currentHp: 25,
-          maxHp: 25,
-          attackIds: [2],
-          baseAttack: 15,
-          currentLevel: 5,
+        name: MONSTER_ASSET_KEYS.IGUANIGNITE,
+        assetKey: MONSTER_ASSET_KEYS.IGUANIGNITE,
+        assetFrame: 0,
+        currentHp: 25,
+        maxHp: 25,
+        attackIds: [2],
+        baseAttack: 15,
+        currentLevel: 5,
       },
       skipBattleAnimations: SKIP_BATTLE_ANIMATIONS
-  })
+    })
 
     // render out the main info and sub info panes
     this.#battleMenu = new BattleMenu(this, this.#activePlayerMonster)
@@ -112,7 +112,7 @@ create() {
       if (this.#battleMenu.selectedAttack === undefined) {
         return
       }
-      
+
       this.#activePlayerAttackIndex = this.#battleMenu.selectedAttack
 
       if (!this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex]) {
@@ -149,17 +149,17 @@ create() {
 
   #playerAttack() {
     this.#battleMenu.updateInfoPaneMessagesNoInputRequired(
-      `${this.#activePlayerMonster.name} used ${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].name}`, 
-    
+      `${this.#activePlayerMonster.name} used ${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].name}`,
+
       () => {
-      this.time.delayedCall(500, () => {
-        this.#activeEnemyMonster.playTakeDamageAnimation(() => {
-          this.#activeEnemyMonster.takeDamage(this.#activePlayerMonster.baseAttack, () => {
-            this.#enemyAttack()
+        this.time.delayedCall(500, () => {
+          this.#activeEnemyMonster.playTakeDamageAnimation(() => {
+            this.#activeEnemyMonster.takeDamage(this.#activePlayerMonster.baseAttack, () => {
+              this.#enemyAttack()
+            })
           })
         })
-      })
-    }, SKIP_BATTLE_ANIMATIONS)
+      }, SKIP_BATTLE_ANIMATIONS)
   }
 
   #enemyAttack() {
@@ -224,8 +224,8 @@ create() {
       name: BATTLE_STATES.PRE_BATTLE_INFO,
       onEnter: () => {
         // wait for enemy monster to appear on the screen and notify player about the wild monster
-        this.#activeEnemyMonster.playMonsterAppearAnimation (() => {
-          this.#activeEnemyMonster.playMonsterHealthBarAppearAnimation (() => undefined)
+        this.#activeEnemyMonster.playMonsterAppearAnimation(() => {
+          this.#activeEnemyMonster.playMonsterHealthBarAppearAnimation(() => undefined)
           this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`wild ${this.#activeEnemyMonster.name} appeared!`], () => {
             // wait for text animation to complete and move to next state
             this.#battleStateMachine.setState(BATTLE_STATES.BRING_OUT_MONSTER)
@@ -238,8 +238,8 @@ create() {
       name: BATTLE_STATES.BRING_OUT_MONSTER,
       onEnter: () => {
         // wait for player monster to appear on the screen and notify the player about the monster
-        this.#activePlayerMonster.playMonsterAppearAnimation (() => {
-          this.#activePlayerMonster.playMonsterHealthBarAppearAnimation (() => undefined)
+        this.#activePlayerMonster.playMonsterAppearAnimation(() => {
+          this.#activePlayerMonster.playMonsterHealthBarAppearAnimation(() => undefined)
           this.#battleMenu.updateInfoPaneMessagesNoInputRequired(`go ${this.#activePlayerMonster.name}!`, () => {
             // wait for text animation to complete and move to next state
             this.time.delayedCall(1200, () => {
@@ -269,14 +269,14 @@ create() {
     this.#battleStateMachine.addState({
       name: BATTLE_STATES.BATTLE,
       onEnter: () => {
-          //general battle flow
-          // show attack used, brief pause
-          // then play attack animation, brief pause
-          // then play damage animation, brief pause
-          // then play health bar animation, brief pause
-          // then repeat the steps above for other monster
-      
-          this.#playerAttack()
+        //general battle flow
+        // show attack used, brief pause
+        // then play attack animation, brief pause
+        // then play damage animation, brief pause
+        // then play health bar animation, brief pause
+        // then repeat the steps above for other monster
+
+        this.#playerAttack()
       }
     })
 

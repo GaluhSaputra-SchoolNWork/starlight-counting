@@ -81,7 +81,7 @@ export class BattleMonster {
         if (this._currentHealth < 0) {
             this._currentHealth = 0
         }
-        this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth, {callback})
+        this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth, { callback })
     }
 
     /**
@@ -105,7 +105,7 @@ export class BattleMonster {
      * @returns {void}
      */
     playTakeDamageAnimation(callback) {
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserGameObject.setAlpha(1)
             callback()
             return
@@ -138,11 +138,11 @@ export class BattleMonster {
 
 
     #createHealthBarComponents(scaleHealthBarBackgroundImageByY = 1) {
-        this._healthBar = new HealthBar(this._scene,34, 34)
+        this._healthBar = new HealthBar(this._scene, 34, 34)
 
         const monsterNameGameText = this._scene.add.text(30, 20, this.name, {
-        color: '#7E3D3F',
-        fontSize: '32px',
+            color: '#7E3D3F',
+            fontSize: '32px',
         })
 
         const healtBarBgImage = this._scene.add.image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND).setOrigin(0).setScale(1, scaleHealthBarBackgroundImageByY)
@@ -159,11 +159,11 @@ export class BattleMonster {
         })
 
         this._phaserHealthBarGameContainer = this._scene.add.container(0, 0, [
-        healtBarBgImage,
-        monsterNameGameText,
-        this._healthBar.container,
-        monsterHealthBarLevelText,
-        monsterHpText,
+            healtBarBgImage,
+            monsterNameGameText,
+            this._healthBar.container,
+            monsterHealthBarLevelText,
+            monsterHpText,
         ]).setAlpha(0)
     }
 }

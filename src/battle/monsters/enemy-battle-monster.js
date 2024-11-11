@@ -12,7 +12,7 @@ export class EnemyBattleMonster extends BattleMonster {
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
      */
     constructor(config) {
-        super({...config, scaleHealthBarBackgroundImageByY: 0.8 }, ENEMY_POSITION)
+        super({ ...config, scaleHealthBarBackgroundImageByY: 0.8 }, ENEMY_POSITION)
     }
 
     /**
@@ -25,7 +25,7 @@ export class EnemyBattleMonster extends BattleMonster {
         this._phaserGameObject.setPosition(startXPos, ENEMY_POSITION.y)
         this._phaserGameObject.setAlpha(1)
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserGameObject.setX(endXPos)
             callback()
             return
@@ -56,7 +56,7 @@ export class EnemyBattleMonster extends BattleMonster {
         this._phaserHealthBarGameContainer.setPosition(startXPos, this._phaserHealthBarGameContainer.y)
         this._phaserHealthBarGameContainer.setAlpha(1)
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserHealthBarGameContainer.setX(endXPos)
             callback()
             return
@@ -85,7 +85,7 @@ export class EnemyBattleMonster extends BattleMonster {
         const startYPos = this._phaserGameObject.y
         const endYPos = startYPos - 400
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserGameObject.setY(endYPos)
             callback()
             return

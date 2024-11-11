@@ -27,11 +27,11 @@ export class PlayerBattleMonster extends BattleMonster {
 
     #addHealthBarComponents() {
         this.#healthBarTextGameObject = this._scene.add
-        .text(443, 80, '', {
-            color: '#7E3D3F',
-            fontSize: '16px',
-        })
-        .setOrigin(1, 0)
+            .text(443, 80, '', {
+                color: '#7E3D3F',
+                fontSize: '16px',
+            })
+            .setOrigin(1, 0)
         this.#setHealthBarText()
 
         this._phaserHealthBarGameContainer.add(this.#healthBarTextGameObject)
@@ -56,7 +56,7 @@ export class PlayerBattleMonster extends BattleMonster {
         this._phaserGameObject.setPosition(startXPos, PLAYER_POSITION.y)
         this._phaserGameObject.setAlpha(1)
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserGameObject.setX(endXPos)
             callback()
             return
@@ -87,7 +87,7 @@ export class PlayerBattleMonster extends BattleMonster {
         this._phaserHealthBarGameContainer.setPosition(startXPos, this._phaserHealthBarGameContainer.y)
         this._phaserHealthBarGameContainer.setAlpha(1)
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserHealthBarGameContainer.setX(endXPos)
             callback()
             return
@@ -116,7 +116,7 @@ export class PlayerBattleMonster extends BattleMonster {
         const startYPos = this._phaserGameObject.y
         const endYPos = startYPos + 400
 
-        if(this._skipBattleAnimations) {
+        if (this._skipBattleAnimations) {
             this._phaserGameObject.setY(endYPos)
             callback()
             return
@@ -137,4 +137,3 @@ export class PlayerBattleMonster extends BattleMonster {
         })
     }
 }
-
