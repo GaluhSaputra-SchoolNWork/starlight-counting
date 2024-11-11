@@ -32,7 +32,7 @@ export class BattleMonster {
         this._maxHealth = this._monsterDetails.maxHp
         this._monsterAttacks = []
 
-        this._phaserGameObject = this._scene.add.image(position.x, position.y, this._monsterDetails.assetKey, this._monsterDetails.assetFrame || 0)
+        this._phaserGameObject = this._scene.add.image(position.x, position.y, this._monsterDetails.assetKey, this._monsterDetails.assetFrame || 0).setAlpha(0)
         this.#createHealthBarComponents(config.scaleHealthBarBackgroundImageByY)
         this._monsterDetails.attackIds.forEach(attackId => {
             const monsterAttack = DataUtils.getMonsterAttack(this._scene, attackId)
@@ -81,6 +81,53 @@ export class BattleMonster {
         this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth, {callback})
     }
 
+    /**
+     * @param {() => void} callback 
+     * @returns {void}
+     */
+    playMonsterAppearAnimation(callback) {
+        throw new Error('playMonsterAppearAnimation is not implemented')
+    }
+
+    /**
+     * @param {() => void} callback 
+     * @returns {void}
+     */
+    playMonsterHealthBarAppearAnimation(callback) {
+        throw new Error('playMonsterHealthBarAppearAnimation is not implemented')
+    }
+
+    /**
+     * @param {() => void} callback 
+     * @returns {void}
+     */
+    playTakeDamageAnimation(callback) {
+        this._scene.tweens.add({
+            delay: 0,
+            duration: 150,
+            targets: this._phaserGameObject,
+            alpha: {
+                from: 1,
+                start: 1,
+                to: 0,
+            },
+            repeat: 10,
+            onComplete: () => {
+                this._phaserGameObject.setAlpha(1)
+                callback()
+            }
+        })
+    }
+
+    /**
+     * @param {() => void} callback 
+     * @returns {void}
+     */
+    playDeathAnimation(callback) {
+        throw new Error('playDeathAnimation is not implemented')
+    }
+
+
     #createHealthBarComponents(scaleHealthBarBackgroundImageByY = 1) {
         this._healthBar = new HealthBar(this._scene,34, 34)
 
@@ -108,6 +155,6 @@ export class BattleMonster {
         this._healthBar.container,
         monsterHealthBarLevelText,
         monsterHpText,
-        ])
+        ]).setAlpha(0)
     }
 }
