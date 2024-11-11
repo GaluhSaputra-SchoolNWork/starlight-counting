@@ -1,14 +1,25 @@
 import Phaser from '../lib/phaser.js'
-import {
-BATTLE_ASSET_KEYS, MONSTER_ASSET_KEYS} from '../assets/asset-keys.js'
+import { MONSTER_ASSET_KEYS } from '../assets/asset-keys.js'
 import { BattleMenu } from '../battle/ui/menu/battle-menu.js'
 import { SCENE_KEYS } from './scene-keys.js'
 import { DIRECTION } from '../common/direction.js'
 import { Background } from '../battle/background.js'
-import { HealthBar } from '../battle/ui/health-bar.js'
-import { BattleMonster } from '../battle/monsters/battle-monster.js'
 import { EnemyBattleMonster } from '../battle/monsters/enemy-battle-monster.js'
 import { PlayerBattleMonster } from '../battle/monsters/player-battle-monster.js'
+import { StateMachine } from '../utils/state-machine.js'
+
+const BATTLE_STATES = Object.freeze({
+  INTRO: 'INTRO',
+  PRE_BATTLE_INFO: 'PRE_BATTLE_INFO',
+  BRING_OUT_MONSTER: 'BRING_OUT_MONSTER',
+  PLAYER_INPUT: 'PLAYER_INPUT',
+  ENEMY_INPUT: 'ENEMY_INPUT',
+  BATTLE: 'BATTLE',
+  POST_ATTACK_CHECK: 'POST_ATTACK_CHECK',
+  FINISHED: 'FINISHED',
+  FLEE_ATTEMPT: 'FLEE_ATTEMPT',
+})
+
 
 export class BattleScene extends Phaser.Scene {
     /** @type {BattleMenu} */
@@ -21,6 +32,8 @@ export class BattleScene extends Phaser.Scene {
     #activePlayerMonster
     /** @type {number} */
     #activePlayerAttackIndex
+    /** @type {StateMachine} */
+    #battleStateMachine
 
 constructor() {
     super({
@@ -48,7 +61,7 @@ create() {
             currentHp: 25,
             maxHp: 25,
             attackIds: [1],
-            baseAttack: 25,
+            baseAttack: 5,
             currentLevel: 5,
         }
     })
@@ -62,19 +75,21 @@ create() {
           currentHp: 25,
           maxHp: 25,
           attackIds: [2],
-          baseAttack: 5,
+          baseAttack: 15,
           currentLevel: 5,
       },
   })
 
     // render out the main info and sub info panes
     this.#battleMenu = new BattleMenu(this, this.#activePlayerMonster)
-    this.#battleMenu.showMainBattleMenu()
+    this.#createBattleStateMachine()
 
     this.#cursorKeys = this.input.keyboard.createCursorKeys()
   }
 
   update() {
+    this.#battleStateMachine.update()
+
     const wasSpaceKeyPressed = Phaser.Input.Keyboard.JustDown(this.#cursorKeys.space)
     if (wasSpaceKeyPressed) {
       this.#battleMenu.handlePlayerInput('OK')
@@ -93,7 +108,7 @@ create() {
       console.log(`Player selected the following move: ${this.#battleMenu.selectedAttack}`)
 
       this.#battleMenu.hideMonsterAttackSubMenu()
-      this.#handleBattleSequence()
+      this.#battleStateMachine.setState(BATTLE_STATES.ENEMY_INPUT)
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.#cursorKeys.shift)) {
@@ -118,16 +133,6 @@ create() {
     }
   }
 
-  #handleBattleSequence() {
-    //general battle flow
-    // show attack used, brief pause
-    // then play attack animation, brief pause
-    // then play damage animation, brief pause
-    // then play health bar animation, brief pause
-    // then repeat the steps above for other monster
-
-    this.#playerAttack()
-  }
   #playerAttack() {
     this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`${this.#activePlayerMonster.name} used ${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].name}`], () => {
       this.time.delayedCall(500, () => {
@@ -140,13 +145,13 @@ create() {
 
   #enemyAttack() {
     if (this.#activeEnemyMonster.isFainted) {
-      this.#postBattleSequenceCheck()
+      this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
       return
     }
     this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`for ${this.#activeEnemyMonster.name} used ${this.#activeEnemyMonster.attacks[0].name}`], () => {
       this.time.delayedCall(500, () => {
         this.#activePlayerMonster.takeDamage(this.#activeEnemyMonster.baseAttack, () => {
-          this.#postBattleSequenceCheck()
+          this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
         })
       })
     })
@@ -155,19 +160,19 @@ create() {
   #postBattleSequenceCheck() {
     if (this.#activeEnemyMonster.isFainted) {
       this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`Wild ${this.#activeEnemyMonster.name} fainted`, 'You have gained some experience'], () => {
-        this.#transitionToNextScene()
+        this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
       })
       return
     }
 
     if (this.#activePlayerMonster.isFainted) {
       this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`Wild ${this.#activeEnemyMonster.name} fainted`, 'You have no more monsters, escaping to safety...'], () => {
-        this.#transitionToNextScene()
+        this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
       })
       return
     }
 
-    this.#battleMenu.showMainBattleMenu()
+    this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT)
   }
 
   #transitionToNextScene() {
@@ -175,5 +180,99 @@ create() {
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
       this.scene.start(SCENE_KEYS.BATTLE_SCENE)
     })
+  }
+
+  #createBattleStateMachine() {
+    this.#battleStateMachine = new StateMachine('battle', this)
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.INTRO,
+      onEnter: () => {
+        // wait for any scene setup and transitions to complete
+        this.time.delayedCall(500, () => {
+          this.#battleStateMachine.setState(BATTLE_STATES.PRE_BATTLE_INFO)
+        })
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.PRE_BATTLE_INFO,
+      onEnter: () => {
+        // wait for enemy monster to appear on the screen and notify player about the wild monster
+        this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`wild ${this.#activeEnemyMonster.name} appeared!`], () => {
+          // wait for text animation to complete and move to next state
+          this.time.delayedCall(500, () => {
+            this.#battleStateMachine.setState(BATTLE_STATES.BRING_OUT_MONSTER)
+          })
+        })
+      }
+    })
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.BRING_OUT_MONSTER,
+      onEnter: () => {
+        // wait for player monster to appear on the screen and notify the player about the monster
+        this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`go ${this.#activePlayerMonster.name}!`], () => {
+          // wait for text animation to complete and move to next state
+          this.time.delayedCall(500, () => {
+            this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT)
+          })
+        })
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.PLAYER_INPUT,
+      onEnter: () => {
+        this.#battleMenu.showMainBattleMenu()
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.ENEMY_INPUT,
+      onEnter: () => {
+        // TODO add feature in a future update
+        // pick a random move for the enemy monster, and in the future implement some type of AI behavior
+        this.#battleStateMachine.setState(BATTLE_STATES.BATTLE)
+      }
+    })
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.BATTLE,
+      onEnter: () => {
+          //general battle flow
+          // show attack used, brief pause
+          // then play attack animation, brief pause
+          // then play damage animation, brief pause
+          // then play health bar animation, brief pause
+          // then repeat the steps above for other monster
+      
+          this.#playerAttack()
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.POST_ATTACK_CHECK,
+      onEnter: () => {
+        this.#postBattleSequenceCheck()
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.FINISHED,
+      onEnter: () => {
+        this.#transitionToNextScene()
+      }
+    })
+
+    this.#battleStateMachine.addState({
+      name: BATTLE_STATES.FLEE_ATTEMPT,
+      onEnter: () => {
+        this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`You got away safely!`], () => {
+          this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+        })
+      }
+    })
+
+    // start the state machine
+    this.#battleStateMachine.setState('INTRO')
   }
 }
