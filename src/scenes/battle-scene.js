@@ -7,6 +7,7 @@ import { Background } from '../battle/background.js'
 import { EnemyBattleMonster } from '../battle/monsters/enemy-battle-monster.js'
 import { PlayerBattleMonster } from '../battle/monsters/player-battle-monster.js'
 import { StateMachine } from '../utils/state-machine.js'
+import { SKIP_BATTLE_ANIMATIONS } from '../config.js'
 
 const BATTLE_STATES = Object.freeze({
   INTRO: 'INTRO',
@@ -63,7 +64,8 @@ create() {
             attackIds: [1],
             baseAttack: 5,
             currentLevel: 5,
-        }
+        },
+        skipBattleAnimations: SKIP_BATTLE_ANIMATIONS
     })
 
     this.#activePlayerMonster = new PlayerBattleMonster({
@@ -78,6 +80,7 @@ create() {
           baseAttack: 15,
           currentLevel: 5,
       },
+      skipBattleAnimations: SKIP_BATTLE_ANIMATIONS
   })
 
     // render out the main info and sub info panes
@@ -156,7 +159,7 @@ create() {
           })
         })
       })
-    })
+    }, SKIP_BATTLE_ANIMATIONS)
   }
 
   #enemyAttack() {
@@ -172,7 +175,7 @@ create() {
           })
         })
       })
-    })
+    }, SKIP_BATTLE_ANIMATIONS)
   }
 
   #postBattleSequenceCheck() {
@@ -180,7 +183,7 @@ create() {
       this.#activeEnemyMonster.playDeathAnimation(() => {
         this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`Wild ${this.#activeEnemyMonster.name} fainted`, 'You have gained some experience'], () => {
           this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
-        })
+        }, SKIP_BATTLE_ANIMATIONS)
       })
       return
     }
@@ -189,7 +192,7 @@ create() {
       this.#activePlayerMonster.playDeathAnimation(() => {
         this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`Wild ${this.#activeEnemyMonster.name} fainted`, 'You have no more monsters, escaping to safety...'], () => {
           this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
-        })
+        }, SKIP_BATTLE_ANIMATIONS)
       })
       return
     }
@@ -226,7 +229,7 @@ create() {
           this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`wild ${this.#activeEnemyMonster.name} appeared!`], () => {
             // wait for text animation to complete and move to next state
             this.#battleStateMachine.setState(BATTLE_STATES.BRING_OUT_MONSTER)
-          })
+          }, SKIP_BATTLE_ANIMATIONS)
         })
       }
     })
@@ -242,7 +245,7 @@ create() {
             this.time.delayedCall(1200, () => {
               this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT)
             })
-          })
+          }, SKIP_BATTLE_ANIMATIONS)
         })
       }
     })
@@ -296,8 +299,8 @@ create() {
       onEnter: () => {
         this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`You got away safely!`], () => {
           this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
-        })
-      }
+        }, SKIP_BATTLE_ANIMATIONS)
+      },
     })
 
     // start the state machine
