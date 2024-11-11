@@ -16,6 +16,10 @@ const ATTACK_MENU_CURSOR_POS = Object.freeze({
     y: 38,
 })
 
+const PLAYER_INPUT_CURSOR_POS = Object.freeze({
+    y: 488,
+})
+
 export class BattleMenu {
     /** @type {Phaser.Scene} */
     #scene
@@ -47,6 +51,10 @@ export class BattleMenu {
     #selectedAttackIndex
     /** @type {BattleMonster} */
     #activePlayerMonster
+    /** @type {Phaser.GameObjects.Image} */
+    #userInputCursorPhaserImageGameObject
+    /** @type {Phaser.Tweens.Tween} */
+    #userInputCursorPhaserTween
 
     /**
     *
@@ -66,6 +74,7 @@ export class BattleMenu {
         this.#createMainInfoPane()
         this.#createMainBattleMenu()
         this.#createMonsterAttackSubMenu()
+        this.#createPlayerInputCursor()
     }
 
     /** @types {number | undefined} */
@@ -104,6 +113,17 @@ export class BattleMenu {
         this.#moveSelectionSubBattleMenuPhaserContainerGameObject.setAlpha(0)
     }
 
+    playInputCursorAnimation() {
+        this.#userInputCursorPhaserImageGameObject.setPosition(this.#battleTextGameObjectLine1.displayWidth + this.#userInputCursorPhaserImageGameObject.displayWidth * 2.7, this.#userInputCursorPhaserImageGameObject.y)
+        this.#userInputCursorPhaserImageGameObject.setAlpha(1)
+        this.#userInputCursorPhaserTween.restart()
+    }
+
+    hideInputCursor() {
+        this.#userInputCursorPhaserImageGameObject.setAlpha(0)
+        this.#userInputCursorPhaserTween.pause()
+    }
+
     /**
     *
     * @param {import('../../../common/direction.js').Direction | 'OK' | 'CANCEL'} input
@@ -137,6 +157,21 @@ export class BattleMenu {
     }
 
     /**
+     * @param {string} message
+     * @param {() => void} [callback]
+     */
+    updateInfoPaneMessagesNoInputRequired(message, callback) {
+        this.#battleTextGameObjectLine1.setText('').setAlpha(1)
+
+        // TODO: animate message
+        this.#battleTextGameObjectLine1.setText(message)
+        this.#waitingForPlayerInput = false
+        if (callback) {
+            callback()
+        }
+    }
+
+    /**
      * @param {string[]} messages
      * @param {() => void} [callback]
      */
@@ -150,6 +185,7 @@ export class BattleMenu {
     #updateInfoPaneWithMessage() {
         this.#waitingForPlayerInput = false
         this.#battleTextGameObjectLine1.setText('').setAlpha(1)
+        this.hideInputCursor()
 
         // check if all messages have been displayed from the queue and call the callback
         if (this.#queuedInfoPanelMessages.length === 0) {
@@ -164,6 +200,7 @@ export class BattleMenu {
         const messageToDisplay = this.#queuedInfoPanelMessages.shift()
         this.#battleTextGameObjectLine1.setText(messageToDisplay)
         this.#waitingForPlayerInput = true
+        this.playInputCursorAnimation()
     }
 
     #createMainBattleMenu() {
@@ -446,6 +483,8 @@ export class BattleMenu {
     }
 
     #switchToMainBattleMenu() {
+        this.#waitingForPlayerInput = false
+        this.hideInputCursor()
         this.hideMonsterAttackSubMenu()
         this.showMainBattleMenu()
     }
@@ -459,7 +498,7 @@ export class BattleMenu {
         }
 
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.ITEM) {
-            // TODO: add feature in a future update
+            // TODO:: add feature in a future update
             /*
                 for the time being, we will display text about the player having no items
                 and allow the player to navigate back to the main menu
@@ -472,7 +511,7 @@ export class BattleMenu {
         }
 
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.SWITCH) {
-            // TODO: add feature in a future update
+            // TODO:: add feature in a future update
             /*
                 for the time being, we will display text about the player having no items
                 and allow the player to navigate back to the main menu
@@ -512,5 +551,24 @@ export class BattleMenu {
                 exhaustiveGuard(this.#selectedAttackMenuOption)
         }
         this.#selectedAttackIndex = selectedMoveIndex
+    }
+
+    #createPlayerInputCursor() {
+        this.#userInputCursorPhaserImageGameObject = this.#scene.add.image(0, 0, UI_ASSET_KEYS.CURSOR)
+        this.#userInputCursorPhaserImageGameObject.setAngle(90).setScale(2.5, 1.25)
+        this.#userInputCursorPhaserImageGameObject.setAlpha(0)
+
+        this.#userInputCursorPhaserTween = this.#scene.add.tween({
+            delay: 0,
+            duration: 500,
+            repeat: -1,
+            y: {
+                from: PLAYER_INPUT_CURSOR_POS.y,
+                start: PLAYER_INPUT_CURSOR_POS.y,
+                to: PLAYER_INPUT_CURSOR_POS.y + 6,
+            },
+            targets: this.#userInputCursorPhaserImageGameObject,
+        })
+        this.#userInputCursorPhaserTween.pause()
     }
 }

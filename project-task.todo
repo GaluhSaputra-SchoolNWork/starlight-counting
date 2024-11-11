@@ -27,7 +27,7 @@ Battle System:
     ✓ review the battle states and what each one represents @done(11 Nov 2024 13:34)
     ✓ implement each state @done(11 Nov 2024 13:34)
     ✓ add item, flee, and monster states @done(11 Nov 2024 13:34)
-    ✓ player input improvements @done(11 Nov 2024 13:34)
+    ✓ player input improvements @done(11 Nov 2024 14:22)
   ☐ battle scene polish
     ☐ text animations
     ☐ monster animations

@@ -91,6 +91,17 @@ create() {
     this.#battleStateMachine.update()
 
     const wasSpaceKeyPressed = Phaser.Input.Keyboard.JustDown(this.#cursorKeys.space)
+    // limit input based on the current battle state we are in
+    // if we are not in the right battle state, return early and do not process input
+    if (wasSpaceKeyPressed && (this.#battleStateMachine.currentStateName === BATTLE_STATES.PRE_BATTLE_INFO || this.#battleStateMachine.currentStateName === BATTLE_STATES.POST_ATTACK_CHECK || this.#battleStateMachine.currentStateName === BATTLE_STATES.FLEE_ATTEMPT)) {
+      this.#battleMenu.handlePlayerInput('OK')
+      return
+    }
+
+    if (this.#battleStateMachine.currentStateName !== BATTLE_STATES.PLAYER_INPUT) {
+      return
+    }
+
     if (wasSpaceKeyPressed) {
       this.#battleMenu.handlePlayerInput('OK')
 
@@ -134,8 +145,11 @@ create() {
   }
 
   #playerAttack() {
-    this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`${this.#activePlayerMonster.name} used ${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].name}`], () => {
-      this.time.delayedCall(500, () => {
+    this.#battleMenu.updateInfoPaneMessagesNoInputRequired(
+      `${this.#activePlayerMonster.name} used ${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].name}`, 
+    
+      () => {
+      this.time.delayedCall(1200, () => {
         this.#activeEnemyMonster.takeDamage(this.#activePlayerMonster.baseAttack, () => {
           this.#enemyAttack()
         })
@@ -148,8 +162,8 @@ create() {
       this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
       return
     }
-    this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`for ${this.#activeEnemyMonster.name} used ${this.#activeEnemyMonster.attacks[0].name}`], () => {
-      this.time.delayedCall(500, () => {
+    this.#battleMenu.updateInfoPaneMessagesNoInputRequired(`for ${this.#activeEnemyMonster.name} used ${this.#activeEnemyMonster.attacks[0].name}`, () => {
+      this.time.delayedCall(1200, () => {
         this.#activePlayerMonster.takeDamage(this.#activeEnemyMonster.baseAttack, () => {
           this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
         })
@@ -211,9 +225,9 @@ create() {
       name: BATTLE_STATES.BRING_OUT_MONSTER,
       onEnter: () => {
         // wait for player monster to appear on the screen and notify the player about the monster
-        this.#battleMenu.updateInfoPaneMessagesAndWaitForInput([`go ${this.#activePlayerMonster.name}!`], () => {
+        this.#battleMenu.updateInfoPaneMessagesNoInputRequired(`go ${this.#activePlayerMonster.name}!`, () => {
           // wait for text animation to complete and move to next state
-          this.time.delayedCall(500, () => {
+          this.time.delayedCall(1200, () => {
             this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT)
           })
         })
@@ -230,7 +244,7 @@ create() {
     this.#battleStateMachine.addState({
       name: BATTLE_STATES.ENEMY_INPUT,
       onEnter: () => {
-        // TODO add feature in a future update
+        // TODO: add feature in a future update
         // pick a random move for the enemy monster, and in the future implement some type of AI behavior
         this.#battleStateMachine.setState(BATTLE_STATES.BATTLE)
       }
