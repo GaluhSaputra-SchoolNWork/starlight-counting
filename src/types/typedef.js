@@ -17,22 +17,23 @@ import Phaser from "../lib/phaser.js"
  * @property {number} [assetFrame=0]
  * @property {number} currentLevel
  * @property {number} maxHp
- * @property {number} currentHp
- * @property {number} baseAttack
- * @property {number[]} attackIds
+ * @property {number} currentHp the max health of this monster
+ * @property {number} baseAttack the base attack value of this monster
+ * @property {number[]} attackIds the ids of the attacks this monster uses
  */
 
 /**
  * @typedef Coordinate
  * @type {Object}
- * @property {number} x
- * @property {number} y
+ * @property {number} x the position of this coordinate
+ * @property {number} y the position of this coordinate
  */
 
 /**
  * @typedef Attack
  * @type {Object}
- * @property {number} id
- * @property {string} name
- * @property {string} animationName
+ * @property {number} id the unique id of this attack
+ * @property {string} name the name of this attack
+ * @property {import("../battle/attacks/attack-keys.js").AttackKeys} animationName the animation key that is tied to this attack, will be used to play the attack
  */
+
