@@ -28,12 +28,12 @@ Battle System:
     ✓ implement each state @done(11 Nov 2024 13:34)
     ✓ add item, flee, and monster states @done(11 Nov 2024 13:34)
     ✓ player input improvements @done(11 Nov 2024 14:22)
-  ☐ battle scene polish
+  ✓ battle scene polish @done(13 Nov 2024 06:03)
     ✓ text animations @done(11 Nov 2024 18:29)
     ✓ monster animations @done(11 Nov 2024 19:53)
     ✓ skip animations @done(11 Nov 2024 20:31)
-    ✓ attack animations @done(13 Nov 2024 13:37)
-    ☐ scene transitions
+    ✓ attack animations @done(13 Nov 2024 06:03)
+    ✓ scene transitions @done(13 Nov 2024 06:03)
     ✓ custom fonts @done(12 Nov 2024 12:59)
 
 World Scene:
