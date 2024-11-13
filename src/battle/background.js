@@ -7,7 +7,6 @@ export class Background {
     #backgroundGameObject
 
     /**
-    *
     * @param {Phaser.Scene} scene the Phaser 3 Scene the battle menu will be added to
     */
     constructor(scene) {

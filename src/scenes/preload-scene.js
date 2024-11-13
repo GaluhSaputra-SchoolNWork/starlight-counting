@@ -1,10 +1,10 @@
 import Phaser from '../lib/phaser.js'
 import {
-    ATTACK_ASSETS_KEYS,
+    ATTACK_ASSET_KEYS,
     BATTLE_ASSET_KEYS,
     BATTLE_BACKGROUND_ASSET_KEYS,
     CHARACTER_ASSET_KEYS,
-    DATA_ASSETS_KEYS,
+    DATA_ASSET_KEYS,
     HEALTH_BAR_ASSET_KEYS,
     MONSTER_ASSET_KEYS,
     UI_ASSET_KEYS,
@@ -78,21 +78,21 @@ export class PreloadScene extends Phaser.Scene {
             `${monsterTamerAssetPath}/ui/cursor.png`)
 
         // load json data
-        this.load.json(DATA_ASSETS_KEYS.ATTACKS, 'assets/data/attacks.json')
+        this.load.json(DATA_ASSET_KEYS.ATTACKS, 'assets/data/attacks.json')
 
         //load custom fonts
         this.load.addFile(new WebFontFileLoader(this.load, [KENNEY_FUTURE_NARROW_FONT_NAME]))
 
         //load attack assets
-        this.load.spritesheet(ATTACK_ASSETS_KEYS.ICE_SHARD, `${pimenAssetPath}/ice-attack/active.png`, {
+        this.load.spritesheet(ATTACK_ASSET_KEYS.ICE_SHARD, `${pimenAssetPath}/ice-attack/active.png`, {
             frameWidth: 32,
             frameHeight: 32,
         })
-        this.load.spritesheet(ATTACK_ASSETS_KEYS.ICE_SHARD_START, `${pimenAssetPath}/ice-attack/start.png`, {
+        this.load.spritesheet(ATTACK_ASSET_KEYS.ICE_SHARD_START, `${pimenAssetPath}/ice-attack/start.png`, {
             frameWidth: 32,
             frameHeight: 32,
         })
-        this.load.spritesheet(ATTACK_ASSETS_KEYS.SLASH, `${pimenAssetPath}/slash.png`, {
+        this.load.spritesheet(ATTACK_ASSET_KEYS.SLASH, `${pimenAssetPath}/slash.png`, {
             frameWidth: 48,
             frameHeight: 48,
         })

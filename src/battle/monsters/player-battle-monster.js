@@ -11,7 +11,6 @@ export class PlayerBattleMonster extends BattleMonster {
     /** @type {Phaser.GameObjects.Text} */
     #healthBarTextGameObject
     /**
-     * 
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
      */
     constructor(config) {

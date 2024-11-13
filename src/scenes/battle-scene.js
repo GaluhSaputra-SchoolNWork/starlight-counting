@@ -10,6 +10,7 @@ import { StateMachine } from '../utils/state-machine.js'
 import { SKIP_BATTLE_ANIMATIONS } from '../config.js'
 import { ATTACK_TARGET, AttackManager } from '../battle/attacks/attack-manager.js'
 import { createSceneTransition } from '../utils/scene-transition.js'
+import { Controls } from '../utils/controls.js'
 
 const BATTLE_STATES = Object.freeze({
   INTRO: 'INTRO',
@@ -27,8 +28,8 @@ const BATTLE_STATES = Object.freeze({
 export class BattleScene extends Phaser.Scene {
   /** @type {BattleMenu} */
   #battleMenu
-  /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
-  #cursorKeys
+  /** @type {Controls} */
+  #controls
   /** @type {EnemyBattleMonster} */
   #activeEnemyMonster
   /** @type {PlayerBattleMonster} */
@@ -92,13 +93,13 @@ export class BattleScene extends Phaser.Scene {
     this.#createBattleStateMachine()
     this.#attackManager = new AttackManager(this, SKIP_BATTLE_ANIMATIONS)
 
-    this.#cursorKeys = this.input.keyboard.createCursorKeys()
+    this.#controls = new Controls(this)
   }
 
   update() {
     this.#battleStateMachine.update()
 
-    const wasSpaceKeyPressed = Phaser.Input.Keyboard.JustDown(this.#cursorKeys.space)
+    const wasSpaceKeyPressed = this.#controls.wasSpaceKeyPressed()
     // limit input based on the current battle state we are in
     // if we are not in the right battle state, return early and do not process input
     if (wasSpaceKeyPressed && (this.#battleStateMachine.currentStateName === BATTLE_STATES.PRE_BATTLE_INFO || this.#battleStateMachine.currentStateName === BATTLE_STATES.POST_ATTACK_CHECK || this.#battleStateMachine.currentStateName === BATTLE_STATES.FLEE_ATTEMPT)) {
@@ -121,7 +122,7 @@ export class BattleScene extends Phaser.Scene {
       this.#activePlayerAttackIndex = this.#battleMenu.selectedAttack
 
       if (!this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex]) {
-        return;
+        return
       }
 
       console.log(`Player selected the following move: ${this.#battleMenu.selectedAttack}`)
@@ -130,23 +131,12 @@ export class BattleScene extends Phaser.Scene {
       this.#battleStateMachine.setState(BATTLE_STATES.ENEMY_INPUT)
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.#cursorKeys.shift)) {
+    if (this.#controls.wasBackKeyPressed()) {
       this.#battleMenu.handlePlayerInput('CANCEL')
       return
     }
 
-    /** @type {import('../common/direction.js').Direction} */
-    let selectedDirection = DIRECTION.NONE
-    if (this.#cursorKeys.left.isDown) {
-      selectedDirection = DIRECTION.LEFT
-    } else if (this.#cursorKeys.right.isDown) {
-      selectedDirection = DIRECTION.RIGHT
-    } else if (this.#cursorKeys.up.isDown) {
-      selectedDirection = DIRECTION.UP
-    } else if (this.#cursorKeys.down.isDown) {
-      selectedDirection = DIRECTION.DOWN
-    }
-
+    const selectedDirection = this.#controls.getDirectionKeyJustPressed()
     if (selectedDirection !== DIRECTION.NONE) {
       this.#battleMenu.handlePlayerInput(selectedDirection)
     }
@@ -166,7 +156,8 @@ export class BattleScene extends Phaser.Scene {
             })
           })
         })
-      }, SKIP_BATTLE_ANIMATIONS)
+      }, SKIP_BATTLE_ANIMATIONS
+    )
   }
 
   #enemyAttack() {
@@ -174,14 +165,15 @@ export class BattleScene extends Phaser.Scene {
       this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
       return
     }
-    this.#battleMenu.updateInfoPaneMessagesNoInputRequired(`for ${this.#activeEnemyMonster.name} used ${this.#activeEnemyMonster.attacks[0].name}`, () => {
+
+    this.#battleMenu.updateInfoPaneMessagesNoInputRequired(`foe ${this.#activeEnemyMonster.name} used ${this.#activeEnemyMonster.attacks[0].name}`, () => {
       this.time.delayedCall(500, () => {
         this.#attackManager.playAttackAnimation(this.#activeEnemyMonster.attacks[0].animationName, ATTACK_TARGET.PLAYER, () => {
-        this.#activePlayerMonster.playTakeDamageAnimation(() => {
-          this.#activePlayerMonster.takeDamage(this.#activeEnemyMonster.baseAttack, () => {
-            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
+          this.#activePlayerMonster.playTakeDamageAnimation(() => {
+            this.#activePlayerMonster.takeDamage(this.#activeEnemyMonster.baseAttack, () => {
+              this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
+            })
           })
-        })
         })
       })
     }, SKIP_BATTLE_ANIMATIONS)
@@ -281,7 +273,7 @@ export class BattleScene extends Phaser.Scene {
     this.#battleStateMachine.addState({
       name: BATTLE_STATES.BATTLE,
       onEnter: () => {
-        //general battle flow
+        // general battle flow
         // show attack used, brief pause
         // then play attack animation, brief pause
         // then play damage animation, brief pause

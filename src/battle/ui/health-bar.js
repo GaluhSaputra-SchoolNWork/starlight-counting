@@ -24,10 +24,9 @@ export class HealthBar {
     #rightShadowCap
 
     /**
-    *
     * @param {Phaser.Scene} scene the Phaser 3 Scene the battle menu will be added to
-    * @param {number} x
-    * @param {number} y
+    * @param {number} x the x position to place the health bar container
+    * @param {number} y the y position to place the health bar container
     */
     constructor(scene, x, y) {
         this.#scene = scene
@@ -40,6 +39,7 @@ export class HealthBar {
         this.#setMeterPercentage(1)
     }
 
+    /** @type {Phaser.GameObjects.Container} */
     get container() {
         return this.#healthBarContainer
     }
@@ -94,6 +94,7 @@ export class HealthBar {
 
     /**
      * @param {number} [percent=1] a number between 0 and 1 that is used for setting how filled the health bar is
+     * @returns {void}
      */
     #setMeterPercentage(percent = 1) {
         const width = this.#fullWidth * percent
@@ -103,11 +104,11 @@ export class HealthBar {
     }
 
     /**
-     * 
      * @param {number} [percent=1] a number between 0 and 1 that is used for setting how filled the health bar is
-     * @param {Object} [options]
-     * @param {number} [options.duration=1000]
-     * @param {() => void} [options.callback]
+     * @param {Object} [options] optional configuration options that can be provided for the animation
+     * @param {number} [options.duration=1000] the duration of the health bar animation
+     * @param {() => void} [options.callback] an optional callback that will be called when the animation is complete
+     * @returns {void}
      */
     setMeterPercentageAnimated(percent, options) {
         const width = this.#fullWidth * percent

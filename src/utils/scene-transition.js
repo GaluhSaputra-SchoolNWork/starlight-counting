@@ -1,3 +1,5 @@
+import Phaser from '../lib/phaser.js'
+
 /**
  * @param {Phaser.Scene} scene 
  * @param {object} [options] 

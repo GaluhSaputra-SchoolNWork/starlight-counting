@@ -24,18 +24,18 @@ export const UI_ASSET_KEYS = Object.freeze({
     CURSOR: 'CURSOR',
 })
 
-export const DATA_ASSETS_KEYS = Object.freeze({
+export const DATA_ASSET_KEYS = Object.freeze({
     ATTACKS: 'ATTACKS',
 })
 
-export const ATTACK_ASSETS_KEYS = Object.freeze({
+export const ATTACK_ASSET_KEYS = Object.freeze({
     ICE_SHARD: 'ICE_SHARD',
     ICE_SHARD_START: 'ICE_SHARD_START',
     SLASH: 'SLASH',
 })
 
 export const WORLD_ASSET_KEYS = Object.freeze({
-    WORLD_BACKGROUND: 'WORLD_BACKGROUND'
+    WORLD_BACKGROUND: 'WORLD_BACKGROUND',
 })
 
 export const CHARACTER_ASSET_KEYS = Object.freeze({

@@ -6,8 +6,9 @@ export class WebFontFileLoader extends Phaser.Loader.File {
     #fontNames
 
     /**
-     * @param {Phaser.Loader.LoaderPlugin} loader 
-     * @param {string[]} fontNames 
+     * @param {Phaser.Loader.LoaderPlugin} loader The loader that is going to load this File.
+     * @param {string[]} fontNames The list of font names that will be loaded by the WebFontLoader library.
+     * The font names need to match the font-family name in the @font-face style declaration
      */
     constructor(loader, fontNames) {
         super(loader, {

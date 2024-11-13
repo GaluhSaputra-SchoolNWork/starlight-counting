@@ -8,7 +8,6 @@ const ENEMY_POSITION = Object.freeze({
 
 export class EnemyBattleMonster extends BattleMonster {
     /**
-     * 
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
      */
     constructor(config) {

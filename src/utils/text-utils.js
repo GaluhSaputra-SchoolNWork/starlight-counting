@@ -8,7 +8,6 @@ import Phaser from '../lib/phaser.js'
  */
 
 /**
- * 
  * @param {Phaser.Scene} scene the Phaser 3 Scene the time event will be added to
  * @param {Phaser.GameObjects.Text} target the Phaser 3 Text Game Object that will be animated
  * @param {string} text the text to display on the target game object

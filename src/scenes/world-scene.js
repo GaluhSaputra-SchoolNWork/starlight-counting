@@ -2,8 +2,9 @@ import Phaser from '../lib/phaser.js'
 import { WORLD_ASSET_KEYS } from '../assets/asset-keys.js'
 import { SCENE_KEYS } from "./scene-keys.js"
 import { Player } from '../world/characters/player.js'
-
-const TILE_SIZE = 64
+import { Controls } from '../utils/controls.js'
+import { DIRECTION } from '../common/direction.js'
+import { TILE_SIZE } from '../config.js'
 
 /** @type {import('../types/typedef.js').Coordinate} */
 const PLAYER_POSITION = Object.freeze({
@@ -12,7 +13,10 @@ const PLAYER_POSITION = Object.freeze({
 })
 
 export class WorldScene extends Phaser.Scene {
+    /** @type {Player} */
     #player
+    /** @type {Controls} */
+    #controls
 
     constructor() {
         super({
@@ -27,7 +31,17 @@ export class WorldScene extends Phaser.Scene {
 
         this.#player = new Player({
             scene: this,
-            position: PLAYER_POSITION
+            position: PLAYER_POSITION,
+            direction: DIRECTION.DOWN,
         })
+
+        this.#controls = new Controls(this)
+    }
+
+    update() {
+        const selectedDirection = this.#controls.getDirectionKeyJustPressed()
+        if (selectedDirection !== DIRECTION.NONE) {
+            this.#player.moveCharacter(selectedDirection)
+        }
     }
 }

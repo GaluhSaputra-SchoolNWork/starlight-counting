@@ -1,5 +1,5 @@
 import Phaser from '../../../lib/phaser.js'
-import { MONSTER_ASSET_KEYS, UI_ASSET_KEYS } from '../../../assets/asset-keys.js'
+import { UI_ASSET_KEYS } from '../../../assets/asset-keys.js'
 import { DIRECTION } from '../../../common/direction.js'
 import { exhaustiveGuard } from '../../../utils/guard.js'
 import { ACTIVE_BATTLE_MENU, ATTACK_MOVE_OPTIONS, BATTLE_MENU_OPTIONS } from './battle-menu-options.js'
@@ -49,7 +49,7 @@ export class BattleMenu {
     #queuedInfoPanelCallback
     /** @type {boolean} */
     #waitingForPlayerInput
-    /** @types {number | undefined} */
+    /** @type {number | undefined} */
     #selectedAttackIndex
     /** @type {BattleMonster} */
     #activePlayerMonster
@@ -63,12 +63,11 @@ export class BattleMenu {
     #queuedMessageAnimationPlaying
 
     /**
-    *
     * @param {Phaser.Scene} scene the Phaser 3 Scene the battle menu will be added to
-    * @param {BattleMonster} activePlayerMonster
+    * @param {BattleMonster} activePlayerMonster the players current active monster in the current battle
     */
     constructor(scene, activePlayerMonster) {
-        this.#scene = scene
+        this.#scene = scene;
         this.#activePlayerMonster = activePlayerMonster
         this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_MAIN
         this.#selectedBattleMenuOption = BATTLE_MENU_OPTIONS.FIGHT
@@ -133,7 +132,6 @@ export class BattleMenu {
     }
 
     /**
-    *
     * @param {import('../../../common/direction.js').Direction | 'OK' | 'CANCEL'} input
     */
     handlePlayerInput(input) {
@@ -172,6 +170,7 @@ export class BattleMenu {
      * @param {string} message
      * @param {() => void} [callback]
      * @param {boolean} [skipAnimation=false]
+     * @returns {void}
      */
     updateInfoPaneMessagesNoInputRequired(message, callback, skipAnimation = false) {
         this.#battleTextGameObjectLine1.setText('').setAlpha(1)
@@ -200,6 +199,7 @@ export class BattleMenu {
      * @param {string[]} messages
      * @param {() => void} [callback]
      * @param {boolean} [skipAnimation=false]
+     * @returns {void}
      */
     updateInfoPaneMessagesAndWaitForInput(messages, callback, skipAnimation = false) {
         this.#queuedInfoPanelMessages = messages
@@ -567,6 +567,11 @@ export class BattleMenu {
         }
 
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.FLEE) {
+            //TODO: add feature in a future update
+            /*
+                for the time being, we will display text about the player successfully running away
+                and then restart the Phaser scene after doing a screen fade out
+            */
             this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_FLEE
             this.updateInfoPaneMessagesAndWaitForInput(['You fail to run away...'], () => {
                 this.#switchToMainBattleMenu()
