@@ -37,3 +37,14 @@ import Phaser from "../lib/phaser.js"
  * @property {import("../battle/attacks/attack-keys.js").AttackKeys} animationName the animation key that is tied to this attack, will be used to play the attack animation when the attack is used
  */
 
+/**
+ * @typedef Animation
+ * @type {object}
+ * @property {string} key
+ * @property {number[]} [frames]
+ * @property {number} frameRate
+ * @property {number} repeat
+ * @property {number} delay
+ * @property {boolean} yoyo
+ * @property {string} assetKey
+ */

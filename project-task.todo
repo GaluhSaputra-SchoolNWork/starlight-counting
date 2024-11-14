@@ -39,9 +39,9 @@ Battle System:
 World Scene:
   ✓ load level background @done(13 Nov 2024 09:00)
   ✓ create player @done(13 Nov 2024 09:00)
-  ☐ handle player input
+  ✓ handle player input @done(13 Nov 2024 09:00)
   ☐ camera movement
-  ☐ handle grid based movement
+  ✓ handle grid based movement @done(14 Nov 2024 07:43)
   ☐ handle collisions
   ☐ add wild monster encounter logic
   ☐ store player position in data manager
