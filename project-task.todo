@@ -40,7 +40,7 @@ World Scene:
   ✓ load level background @done(13 Nov 2024 09:00)
   ✓ create player @done(13 Nov 2024 09:00)
   ✓ handle player input @done(13 Nov 2024 09:00)
-  ☐ camera movement
+  ✓ camera movement @done(14 Nov 2024 08:33)
   ✓ handle grid based movement @done(14 Nov 2024 07:43)
   ☐ handle collisions
   ☐ add wild monster encounter logic
