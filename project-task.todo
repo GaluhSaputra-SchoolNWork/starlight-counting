@@ -42,9 +42,9 @@ World Scene:
   ✓ handle player input @done(13 Nov 2024 09:00)
   ✓ camera movement @done(14 Nov 2024 08:33)
   ✓ handle grid based movement @done(14 Nov 2024 07:43)
-  ☐ handle collisions
-  ☐ add wild monster encounter logic
-  ☐ store player position in data manager
+  ✓ handle collisions @done(14 Nov 2024 09:35)
+  ✓ add wild monster encounter logic @done(14 Nov 2024 09:35)
+  ✓ store player position in data manager @done(14 Nov 2024 09:57)
 
 Level Development With Tiled:
   ☐ Basic level design concepts

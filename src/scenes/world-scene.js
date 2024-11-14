@@ -5,12 +5,12 @@ import { Player } from '../world/characters/player.js'
 import { Controls } from '../utils/controls.js'
 import { DIRECTION } from '../common/direction.js'
 import { TILED_COLLISION_LAYER_ALPHA, TILE_SIZE } from '../config.js'
+import { DATA_MANAGER_STORE_KEYS, dataManager } from '../utils/data-manager.js'
 
-/** @type {import('../types/typedef.js').Coordinate} */
-const PLAYER_POSITION = Object.freeze({
-    x: 6 * TILE_SIZE,
-    y: 21 * TILE_SIZE,
-})
+/*
+    Our scene will be 16 x 9 (1024 x 576 pixels)
+    each grid size will be 64 x 64 pixels
+*/
 
 export class WorldScene extends Phaser.Scene {
     /** @type {Player} */
@@ -77,8 +77,8 @@ export class WorldScene extends Phaser.Scene {
 
         this.#player = new Player({
             scene: this,
-            position: PLAYER_POSITION,
-            direction: DIRECTION.DOWN,
+            position: dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION),
+            direction: dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_DIRECTION),
             collisionLayer: collisionLayer,
             spriteGridMovementFinishedCallback: () => {
                 this.#handlePlayerMovementUpdate()
@@ -108,6 +108,11 @@ export class WorldScene extends Phaser.Scene {
     }
 
     #handlePlayerMovementUpdate() {
+        dataManager.store.set(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION, {
+            x: this.#player.sprite.x,
+            y: this.#player.sprite.y,
+        })
+        dataManager.store.set(DATA_MANAGER_STORE_KEYS.PLAYER_DIRECTION, this.#player.direction)
         if (!this.#encounterLayer) {
             return
         }
@@ -121,6 +126,7 @@ export class WorldScene extends Phaser.Scene {
         this.#wildMonsterEncountered = Math.random() < 0.9
         if (this.#wildMonsterEncountered) {
             console.log(`[${WorldScene.name}:handlePlayerMovementUpdate] player encountered a wild monster`)
+            // TODO: add in a custom animation that is similar to the old games
             this.cameras.main.fadeOut(2000)
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                 this.scene.start(SCENE_KEYS.BATTLE_SCENE)
