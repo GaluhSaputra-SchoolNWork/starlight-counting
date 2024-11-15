@@ -56,6 +56,7 @@ export class StateMachine {
      */
     setState(name) {
         const methodName = 'setState'
+
         if (!this.#states.has(name)) {
             console.warn(`[${StateMachine.name}-${this.#id}:${methodName}] tried to change to unknown state: ${name}`)
             return
@@ -71,7 +72,9 @@ export class StateMachine {
         }
 
         this.#isChangingState = true
-        console.log(`[${StateMachine.name}-${this.#id}:${methodName}] change from ${this.#currentState?.name ?? 'none'} to ${name}`)
+        console.log(
+            `[${StateMachine.name}-${this.#id}:${methodName}] change from ${this.#currentState?.name ?? 'none'} to ${name}`
+        )
 
         this.#currentState = this.#states.get(name)
 

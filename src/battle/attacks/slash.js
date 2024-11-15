@@ -1,6 +1,6 @@
 import Phaser from "../../lib/phaser.js"
-import { ATTACK_ASSET_KEYS } from "../../assets/asset-keys.js";
-import { Attack } from "./attack.js";
+import { ATTACK_ASSET_KEYS } from "../../assets/asset-keys.js"
+import { Attack } from "./attack.js"
 
 export class Slash extends Attack {
     /** @protected @type {Phaser.GameObjects.Container} */
@@ -23,11 +23,13 @@ export class Slash extends Attack {
         this._attackGameObject1 = this._scene.add.sprite(0, 0, ATTACK_ASSET_KEYS.SLASH, 0).setOrigin(0.5).setScale(4)
         this._attackGameObject2 = this._scene.add.sprite(30, 0, ATTACK_ASSET_KEYS.SLASH, 0).setOrigin(0.5).setScale(4)
         this._attackGameObject3 = this._scene.add.sprite(-30, 0, ATTACK_ASSET_KEYS.SLASH, 0).setOrigin(0.5).setScale(4)
-        this._attackGameObject = this._scene.add.container(this._position.x, this._position.y, [
-            this._attackGameObject1,
-            this._attackGameObject2,
-            this._attackGameObject3,
-        ]).setAlpha(0)
+        this._attackGameObject = this._scene.add
+            .container(this._position.x, this._position.y, [
+                this._attackGameObject1,
+                this._attackGameObject2,
+                this._attackGameObject3,
+            ])
+            .setAlpha(0)
     }
 
     /**

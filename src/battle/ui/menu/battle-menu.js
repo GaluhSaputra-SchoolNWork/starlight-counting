@@ -63,11 +63,12 @@ export class BattleMenu {
     #queuedMessageAnimationPlaying
 
     /**
+    *
     * @param {Phaser.Scene} scene the Phaser 3 Scene the battle menu will be added to
     * @param {BattleMonster} activePlayerMonster the players current active monster in the current battle
     */
     constructor(scene, activePlayerMonster) {
-        this.#scene = scene;
+        this.#scene = scene
         this.#activePlayerMonster = activePlayerMonster
         this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_MAIN
         this.#selectedBattleMenuOption = BATTLE_MENU_OPTIONS.FIGHT
@@ -121,7 +122,10 @@ export class BattleMenu {
     }
 
     playInputCursorAnimation() {
-        this.#userInputCursorPhaserImageGameObject.setPosition(this.#battleTextGameObjectLine1.displayWidth + this.#userInputCursorPhaserImageGameObject.displayWidth * 2.7, this.#userInputCursorPhaserImageGameObject.y)
+        this.#userInputCursorPhaserImageGameObject.setPosition(
+            this.#battleTextGameObjectLine1.displayWidth + this.#userInputCursorPhaserImageGameObject.displayWidth * 2.7, 
+            this.#userInputCursorPhaserImageGameObject.y
+        )
         this.#userInputCursorPhaserImageGameObject.setAlpha(1)
         this.#userInputCursorPhaserTween.restart()
     }
@@ -132,6 +136,7 @@ export class BattleMenu {
     }
 
     /**
+    *
     * @param {import('../../../common/direction.js').Direction | 'OK' | 'CANCEL'} input
     */
     handlePlayerInput(input) {
@@ -159,7 +164,6 @@ export class BattleMenu {
             }
             return
         }
-
         this.#updateSelectedBattleMenuOptionFromInput(input)
         this.#updateSelectedMoveMenuOptionFromInput(input)
         this.#moveMainBattleMenuCursor()
@@ -243,14 +247,21 @@ export class BattleMenu {
                 this.#queuedMessageAnimationPlaying = false
             }
         })
-        this.playInputCursorAnimation()
     }
 
     #createMainBattleMenu() {
         this.#battleTextGameObjectLine1 = this.#scene.add.text(20, 468, 'what should', BATTLE_UI_TEXT_STYLE)
-        this.#battleTextGameObjectLine2 = this.#scene.add.text(20, 512, `${this.#activePlayerMonster.name} do next?`, BATTLE_UI_TEXT_STYLE)
+        this.#battleTextGameObjectLine2 = this.#scene.add.text(
+            20, 
+            512, 
+            `${this.#activePlayerMonster.name} do next?`, 
+            BATTLE_UI_TEXT_STYLE
+        )
 
-        this.#mainBattleMenuCursorPhaserImageGameObject = this.#scene.add.image(BATTLE_MENU_CURSOR_POS.x, BATTLE_MENU_CURSOR_POS.y, UI_ASSET_KEYS.CURSOR, 0).setOrigin(0.5).setScale(2.5)
+        this.#mainBattleMenuCursorPhaserImageGameObject = this.#scene.add
+            .image(BATTLE_MENU_CURSOR_POS.x, BATTLE_MENU_CURSOR_POS.y, UI_ASSET_KEYS.CURSOR, 0)
+            .setOrigin(0.5)
+            .setScale(2.5)
 
         this.#mainBattleMenuPhaserContainerGameObject = this.#scene.add.container(520, 448, [
             this.#createMainInfoSubPane(),
@@ -509,7 +520,10 @@ export class BattleMenu {
 
         switch (this.#selectedAttackMenuOption) {
             case ATTACK_MOVE_OPTIONS.MOVE_1:
-                this.#attackBattleMenuCursorPhaserImageGameObject.setPosition(ATTACK_MENU_CURSOR_POS.x, ATTACK_MENU_CURSOR_POS.y)
+                this.#attackBattleMenuCursorPhaserImageGameObject.setPosition(
+                    ATTACK_MENU_CURSOR_POS.x, 
+                    ATTACK_MENU_CURSOR_POS.y
+                )
                 return
             case ATTACK_MOVE_OPTIONS.MOVE_2:
                 this.#attackBattleMenuCursorPhaserImageGameObject.setPosition(228, ATTACK_MENU_CURSOR_POS.y)
@@ -547,9 +561,13 @@ export class BattleMenu {
                 and allow the player to navigate back to the main menu
             */
             this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_FLEE
-            this.updateInfoPaneMessagesAndWaitForInput(['Your bag is empty...'], () => {
-                this.#switchToMainBattleMenu()
-            }, SKIP_BATTLE_ANIMATIONS)
+            this.updateInfoPaneMessagesAndWaitForInput(
+                ['Your bag is empty...'], 
+                () => {
+                    this.#switchToMainBattleMenu()
+                }, 
+                SKIP_BATTLE_ANIMATIONS
+            )
             return
         }
 
@@ -560,9 +578,13 @@ export class BattleMenu {
                 and allow the player to navigate back to the main menu
             */
             this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_SWITCH
-            this.updateInfoPaneMessagesAndWaitForInput(['You have no other monsters in your party...'], () => {
-                this.#switchToMainBattleMenu()
-            }, SKIP_BATTLE_ANIMATIONS)
+            this.updateInfoPaneMessagesAndWaitForInput(
+                ['You have no other monsters in your party...'], 
+                () => {
+                    this.#switchToMainBattleMenu()
+                }, 
+                SKIP_BATTLE_ANIMATIONS
+            )
             return
         }
 
@@ -573,13 +595,19 @@ export class BattleMenu {
                 and then restart the Phaser scene after doing a screen fade out
             */
             this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_FLEE
-            this.updateInfoPaneMessagesAndWaitForInput(['You fail to run away...'], () => {
-                this.#switchToMainBattleMenu()
-            }, SKIP_BATTLE_ANIMATIONS)
+            this.updateInfoPaneMessagesAndWaitForInput(
+                ['You fail to run away...'], 
+                () => {
+                    this.#switchToMainBattleMenu()
+                }, 
+                SKIP_BATTLE_ANIMATIONS
+            )
             return
         }
+
         exhaustiveGuard(this.#selectedBattleMenuOption)
     }
+
     #handlePlayerChooseAttack() {
         let selectedMoveIndex = 0
         switch (this.#selectedAttackMenuOption) {
@@ -598,6 +626,7 @@ export class BattleMenu {
             default:
                 exhaustiveGuard(this.#selectedAttackMenuOption)
         }
+        
         this.#selectedAttackIndex = selectedMoveIndex
     }
 

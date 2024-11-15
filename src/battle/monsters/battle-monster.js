@@ -32,7 +32,6 @@ export class BattleMonster {
         if (this.constructor === BattleMonster) {
             throw new Error('BattleMonster is an abstract class and cannot be instantiated.')
         }
-
         this._scene = config.scene
         this._monsterDetails = config.monsterDetails
         this._currentHealth = this._monsterDetails.currentHp
@@ -40,8 +39,11 @@ export class BattleMonster {
         this._monsterAttacks = []
         this._skipBattleAnimations = config.skipBattleAnimations || false
 
-        this._phaserGameObject = this._scene.add.image(position.x, position.y, this._monsterDetails.assetKey, this._monsterDetails.assetFrame || 0).setAlpha(0)
+        this._phaserGameObject = this._scene.add
+            .image(position.x, position.y, this._monsterDetails.assetKey, this._monsterDetails.assetFrame || 0)
+            .setAlpha(0)
         this.#createHealthBarComponents(config.scaleHealthBarBackgroundImageByY)
+
         this._monsterDetails.attackIds.forEach(attackId => {
             const monsterAttack = DataUtils.getMonsterAttack(this._scene, attackId)
             if (monsterAttack !== undefined) {
@@ -78,6 +80,7 @@ export class BattleMonster {
     /**
      * @param {number} damage 
      * @param {() => void} [callback] 
+     * @returns {void}
      */
     takeDamage(damage, callback) {
         //update current monster health and animate health bar
@@ -85,7 +88,10 @@ export class BattleMonster {
         if (this._currentHealth < 0) {
             this._currentHealth = 0
         }
-        this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth, { callback })
+        this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth, { 
+            callback,
+            skipBattleAnimations: this._skipBattleAnimations,
+         })
     }
 
     /**
@@ -102,6 +108,14 @@ export class BattleMonster {
      */
     playMonsterHealthBarAppearAnimation(callback) {
         throw new Error('playMonsterHealthBarAppearAnimation is not implemented')
+    }
+
+    /**
+     * @param {() => void} callback
+     * @returns {void}
+     */
+    playDeathAnimation(callback) {
+        throw new Error('playDeathAnimation is not implemented.')
     }
 
     /**
@@ -132,15 +146,6 @@ export class BattleMonster {
         })
     }
 
-    /**
-     * @param {() => void} callback 
-     * @returns {void}
-     */
-    playDeathAnimation(callback) {
-        throw new Error('playDeathAnimation is not implemented')
-    }
-
-
     #createHealthBarComponents(scaleHealthBarBackgroundImageByY = 1) {
         this._healthBar = new HealthBar(this._scene, 34, 34)
 
@@ -150,7 +155,10 @@ export class BattleMonster {
             fontSize: '32px',
         })
 
-        const healtBarBgImage = this._scene.add.image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND).setOrigin(0).setScale(1, scaleHealthBarBackgroundImageByY)
+        const healtBarBgImage = this._scene.add
+            .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
+            .setOrigin(0)
+            .setScale(1, scaleHealthBarBackgroundImageByY)
 
         const monsterHealthBarLevelText = this._scene.add.text(monsterNameGameText.width + 35, 23, `L${this.level}`, {
             fontFamily: KENNEY_FUTURE_NARROW_FONT_NAME,
@@ -165,12 +173,14 @@ export class BattleMonster {
             fontStyle: 'italic',
         })
 
-        this._phaserHealthBarGameContainer = this._scene.add.container(0, 0, [
-            healtBarBgImage,
-            monsterNameGameText,
-            this._healthBar.container,
-            monsterHealthBarLevelText,
-            monsterHpText,
-        ]).setAlpha(0)
+        this._phaserHealthBarGameContainer = this._scene.add
+            .container(0, 0, [
+                healtBarBgImage,
+                monsterNameGameText,
+                this._healthBar.container,
+                monsterHealthBarLevelText,
+                monsterHpText,
+            ])
+            .setAlpha(0)
     }
 }

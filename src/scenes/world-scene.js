@@ -6,6 +6,16 @@ import { Controls } from '../utils/controls.js'
 import { DIRECTION } from '../common/direction.js'
 import { TILED_COLLISION_LAYER_ALPHA, TILE_SIZE } from '../config.js'
 import { DATA_MANAGER_STORE_KEYS, dataManager } from '../utils/data-manager.js'
+import { getTargetPositionFromGameObjectPositionAndDirection } from '../utils/grid-utils.js'
+import { CANNOT_READ_SIGN_TEXT, SAMPLE_TEXT } from '../utils/text-utils.js'
+
+/**
+ * @typedef TiledObjectProperty
+ * @type {object}
+ * @property {string} name
+ * @property {string} type
+ * @property {any} value
+ */
 
 /*
     Our scene will be 16 x 9 (1024 x 576 pixels)
@@ -21,6 +31,8 @@ export class WorldScene extends Phaser.Scene {
     #encounterLayer
     /** @type {boolean} */
     #wildMonsterEncountered
+    /** @type {Phaser.Tilemaps.ObjectLayer} */
+    #signLayer
 
     constructor() {
         super({
@@ -28,10 +40,17 @@ export class WorldScene extends Phaser.Scene {
         })
     }
 
+    /**
+     * @returns {void}
+     */
     init() {
+        console.log(`[${WorldScene.name}:init] invoked`)
         this.#wildMonsterEncountered = false
     }
 
+    /**
+     * @returns {void} 
+     */
     create() {
         console.log(`[${WorldScene.name}:preload] invoked`)
 
@@ -61,6 +80,14 @@ export class WorldScene extends Phaser.Scene {
         }
         collisionLayer.setAlpha(TILED_COLLISION_LAYER_ALPHA).setDepth(2)
 
+        // create interactive layer
+        this.#signLayer = map.getObjectLayer('Sign')
+        if (!this.#signLayer) {
+            console.log(`[${WorldScene.name}:create] encountered error while creating sign layer using data from tiled`)
+            return
+        }
+
+        // create collision layer for encounters
         const encounterTiles = map.addTilesetImage('encounter', WORLD_ASSET_KEYS.WORLD_ENCOUNTER_ZONE)
         if (!encounterTiles) {
             console.log(`[${WorldScene.name}:create] encountered error while creating encounter tileset using data from tiled`)
@@ -86,6 +113,7 @@ export class WorldScene extends Phaser.Scene {
         })
         this.cameras.main.startFollow(this.#player.sprite)
 
+        // create foreground for depth 
         this.add.image(0, 0, WORLD_ASSET_KEYS.WORLD_FOREGROUND, 0).setOrigin(0)
 
         this.#controls = new Controls(this)
@@ -93,6 +121,10 @@ export class WorldScene extends Phaser.Scene {
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 
+    /**
+     * @param {DOMHighResTimeStamp} time 
+     * @returns  {void}
+     */
     update(time) {
         if (this.#wildMonsterEncountered) {
             this.#player.update(time)
@@ -104,20 +136,63 @@ export class WorldScene extends Phaser.Scene {
             this.#player.moveCharacter(selectedDirection)
         }
 
+        if (this.#controls.wasSpaceKeyPressed() && !this.#player.isMoving) {
+            this.#handlePlayerInteraction()
+        }
+
         this.#player.update(time)
     }
 
+    #handlePlayerInteraction() {
+        console.log('start of interaction check')
+        // get player current direction and check 1 tile over in that direction to see if there is can be interacted with
+        const {x, y} = this.#player.sprite
+        const targetPosition = getTargetPositionFromGameObjectPositionAndDirection({x, y}, this.#player.direction)
+
+        // check for sign, and display appropriate message if player is not facing up
+        const nearbySign = this.#signLayer.objects.find((object) => {
+            if (!object.x || !object.y) {
+                return
+            }
+
+            // In Tiled, the x value is how far the object starts from the left, and the y is the bottom of tiled object that is being added
+            return object.x === targetPosition.x && object.y - TILE_SIZE === targetPosition.y
+        })
+
+        if (nearbySign) {
+            /** @type {TiledObjectProperty[]} */
+            const props = nearbySign.properties
+            /** @type {string} */
+            const msg = props.find((prop) => prop.name === 'message')?.value
+
+            const usePlaceholderText = this.#player.direction !== DIRECTION.UP
+            let textToShow = CANNOT_READ_SIGN_TEXT
+            if (!usePlaceholderText) {
+                textToShow = msg || SAMPLE_TEXT
+            }
+            console.log(textToShow)
+            return
+        }
+    }
+
+    /**
+     * @returns {void}
+     */
     #handlePlayerMovementUpdate() {
+        // update player position on global data store
         dataManager.store.set(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION, {
             x: this.#player.sprite.x,
             y: this.#player.sprite.y,
         })
+        // update player direction on global data store
         dataManager.store.set(DATA_MANAGER_STORE_KEYS.PLAYER_DIRECTION, this.#player.direction)
+
         if (!this.#encounterLayer) {
             return
         }
 
-        const isInEncounterZone = this.#encounterLayer.getTileAtWorldXY(this.#player.sprite.x, this.#player.sprite.y, true).index !== -1
+        const isInEncounterZone = 
+            this.#encounterLayer.getTileAtWorldXY(this.#player.sprite.x, this.#player.sprite.y, true).index !== -1
         if (!isInEncounterZone) {
             return
         }

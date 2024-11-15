@@ -10,6 +10,7 @@ const PLAYER_POSITION = Object.freeze({
 export class PlayerBattleMonster extends BattleMonster {
     /** @type {Phaser.GameObjects.Text} */
     #healthBarTextGameObject
+
     /**
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
      */
@@ -41,6 +42,7 @@ export class PlayerBattleMonster extends BattleMonster {
     /**
      * @param {number} damage 
      * @param {() => void} [callback] 
+     * @returns {void}
      */
     takeDamage(damage, callback) {
         super.takeDamage(damage, callback)

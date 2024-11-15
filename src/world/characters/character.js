@@ -64,7 +64,9 @@ export class Character {
         this._idleFrameConfig = config.idleFrameConfig
         this._origin = config.origin ? {...config.origin} : {x:0, y:0}
         this._collisionLayer = config.collisionLayer
-        this._phaserGameObject = this._scene.add.sprite(config.position.x, config.position.y, config.assetKey, this._getIdleFrame()).setOrigin(this._origin.x, this._origin.y)
+        this._phaserGameObject = this._scene.add
+            .sprite(config.position.x, config.position.y, config.assetKey, this._getIdleFrame())
+            .setOrigin(this._origin.x, this._origin.y)
         this._spriteGridMovementFinishedCallback = config.spriteGridMovementFinishedCallback
     }
 
@@ -103,6 +105,7 @@ export class Character {
             return
         }
 
+        // stop current animation and show idle frame
         const idleFrame = this._phaserGameObject.anims.currentAnim?.frames[1].frame.name
         this._phaserGameObject.anims.stop()
         if (!idleFrame) {
@@ -118,10 +121,15 @@ export class Character {
         case DIRECTION.NONE:
             break
         default:
+            // We should never reach this default case
             exhaustiveGuard(this._direction)
         }
     }
 
+    /**
+     * @protected
+     * @returns {number}
+     */
     _getIdleFrame() {
         return this._idleFrameConfig[this._direction]
     }

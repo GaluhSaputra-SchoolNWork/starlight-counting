@@ -1,7 +1,7 @@
-import { CHARACTER_ASSET_KEYS } from "../../assets/asset-keys.js";
-import { DIRECTION } from "../../common/direction.js";
-import { exhaustiveGuard } from "../../utils/guard.js";
-import { Character } from "./character.js";
+import { CHARACTER_ASSET_KEYS } from "../../assets/asset-keys.js"
+import { DIRECTION } from "../../common/direction.js"
+import { exhaustiveGuard } from "../../utils/guard.js"
+import { Character } from "./character.js"
 
 /**
  * @typedef {Omit<import("./character").CharacterConfig, 'assetKey' | 'idleFrameConfig'>} PlayerConfig
@@ -38,13 +38,17 @@ export class Player extends Character {
             case DIRECTION.LEFT:
             case DIRECTION.RIGHT:
             case DIRECTION.UP:
-                if(!this._phaserGameObject.anims.isPlaying || this._phaserGameObject.anims.currentAnim?.key !== `PLAYER_${this.direction}`) {
+                if(
+                    !this._phaserGameObject.anims.isPlaying || 
+                    this._phaserGameObject.anims.currentAnim?.key !== `PLAYER_${this.direction}`
+                ) {
                     this._phaserGameObject.play(`PLAYER_${this._direction}`)
                 }
             break
         case DIRECTION.NONE:
             break
         default:
+            // We should never reach this default case
             exhaustiveGuard(this._direction)
         }
     }

@@ -35,6 +35,7 @@ class DataManager extends Phaser.Events.EventEmitter {
     constructor() {
         super()
         this.#store = new Phaser.Data.DataManager(this)
+        // initialize state with initial values
         this.#updateDataManager(initialState)
     }
 

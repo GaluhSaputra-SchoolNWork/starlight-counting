@@ -68,7 +68,6 @@ export class AttackManager {
                 this.#slashAttack.gameObject.setPosition(x, y)
                 this.#slashAttack.playAnimation(callback)
                 break
-                break
             default:
                 exhaustiveGuard(attack)
         }

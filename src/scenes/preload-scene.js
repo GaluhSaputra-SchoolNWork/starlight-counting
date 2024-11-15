@@ -38,18 +38,14 @@ export class PreloadScene extends Phaser.Scene {
         )
 
         // battle assets
-        this.load.image(BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND,
-            `${kenneysAssetPath}/ui-space-expansion/custom-ui.png`)
+        this.load.image(BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND, `${kenneysAssetPath}/ui-space-expansion/custom-ui.png`)
 
         // health bar assets
         this.load.image(
             HEALTH_BAR_ASSET_KEYS.RIGHT_CAP,
             `${kenneysAssetPath}/ui-space-expansion/barHorizontal_green_right.png`
         )
-        this.load.image(
-            HEALTH_BAR_ASSET_KEYS.MIDDLE,
-            `${kenneysAssetPath}/ui-space-expansion/barHorizontal_green_mid.png`
-        )
+        this.load.image(HEALTH_BAR_ASSET_KEYS.MIDDLE, `${kenneysAssetPath}/ui-space-expansion/barHorizontal_green_mid.png`)
         this.load.image(
             HEALTH_BAR_ASSET_KEYS.LEFT_CAP,
             `${kenneysAssetPath}/ui-space-expansion/barHorizontal_green_left.png`
@@ -69,14 +65,11 @@ export class PreloadScene extends Phaser.Scene {
         )
 
         // monster assets
-        this.load.image(MONSTER_ASSET_KEYS.CARNODUSK,
-            `${monsterTamerAssetPath}/monsters/carnodusk.png`)
-        this.load.image(MONSTER_ASSET_KEYS.IGUANIGNITE,
-            `${monsterTamerAssetPath}/monsters/iguanignite.png`)
+        this.load.image(MONSTER_ASSET_KEYS.CARNODUSK, `${monsterTamerAssetPath}/monsters/carnodusk.png`)
+        this.load.image(MONSTER_ASSET_KEYS.IGUANIGNITE, `${monsterTamerAssetPath}/monsters/iguanignite.png`)
 
         // ui assets
-        this.load.image(UI_ASSET_KEYS.CURSOR,
-            `${monsterTamerAssetPath}/ui/cursor.png`)
+        this.load.image(UI_ASSET_KEYS.CURSOR, `${monsterTamerAssetPath}/ui/cursor.png`)
 
         // load json data
         this.load.json(DATA_ASSET_KEYS.ATTACKS, 'assets/data/attacks.json')
@@ -126,7 +119,9 @@ export class PreloadScene extends Phaser.Scene {
     #createAnimation() {
         const animations = DataUtils.getAnimation(this)
         animations.forEach((animation) => {
-            const frames = animation.frames ? this.anims.generateFrameNumbers(animation.assetKey, {frames: animation.frames}) : this.anims.generateFrameNumbers(animation.assetKey)
+            const frames = animation.frames 
+                ? this.anims.generateFrameNumbers(animation.assetKey, {frames: animation.frames}) 
+                : this.anims.generateFrameNumbers(animation.assetKey)
             this.anims.create({
                 key: animation.key,
                 frames: frames,

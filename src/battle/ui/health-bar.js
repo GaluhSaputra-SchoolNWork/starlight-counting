@@ -79,6 +79,7 @@ export class HealthBar {
             .image(x, y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP)
             .setOrigin(0, 0.5)
             .setScale(1, this.#scaleY)
+
         this.#middle = this.#scene.add
             .image(this.#leftCap.x + this.#leftCap.width, y, HEALTH_BAR_ASSET_KEYS.MIDDLE)
             .setOrigin(0, 0.5)
@@ -98,33 +99,44 @@ export class HealthBar {
      */
     #setMeterPercentage(percent = 1) {
         const width = this.#fullWidth * percent
-
         this.#middle.displayWidth = width
         this.#rightCap.x = this.#middle.x + this.#middle.displayWidth
     }
 
+    #updateHealthBarGameObjects() {
+        this.#rightCap.x = this.#middle.x + this.#middle.displayWidth;
+        const isVisible = this.#middle.displayWidth > 0;
+        this.#leftCap.visible = isVisible;
+        this.#middle.visible = isVisible;
+        this.#rightCap.visible = isVisible;
+    }
+
     /**
      * @param {number} [percent=1] a number between 0 and 1 that is used for setting how filled the health bar is
-     * @param {Object} [options] optional configuration options that can be provided for the animation
+     * @param {object} [options] optional configuration options that can be provided for the animation
      * @param {number} [options.duration=1000] the duration of the health bar animation
      * @param {() => void} [options.callback] an optional callback that will be called when the animation is complete
+     * @param {boolean} [options.skipBattleAnimations=false] determines if we skip the health bar animation
      * @returns {void}
      */
     setMeterPercentageAnimated(percent, options) {
         const width = this.#fullWidth * percent
 
+        if (options?.skipBattleAnimations) {
+            this.#setMeterPercentage(percent)
+            if (options?.callback) {
+                options.callback()
+            }
+            return
+        }
+
         this.#scene.tweens.add({
             targets: this.#middle,
             displayWidth: width,
             duration: options?.duration || 1000,
-            //easings.net
             ease: Phaser.Math.Easing.Sine.Out,
             onUpdate: () => {
-                this.#rightCap.x = this.#middle.x + this.#middle.displayWidth
-                const isVisible = this.#middle.displayWidth > 0
-                this.#leftCap.visible = isVisible
-                this.#middle.visible = isVisible
-                this.#rightCap.visible = isVisible
+                this.#updateHealthBarGameObjects
             },
             onComplete: options?.callback,
         })
