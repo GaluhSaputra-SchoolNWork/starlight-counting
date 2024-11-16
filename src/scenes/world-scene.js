@@ -134,9 +134,15 @@ export class WorldScene extends Phaser.Scene {
             collisionLayer: collisionLayer,
             spriteGridMovementFinishedCallback: () => {
                 this.#handlePlayerMovementUpdate()
-            }
+            },
+            otherCharactersToCheckForCollisionWith: this.#npcs,
         })
         this.cameras.main.startFollow(this.#player.sprite)
+
+        // update our collision with npcs
+        this.#npcs.forEach((npc) => {
+            npc.addCharacterToCheckForCollisionWith(this.#player)
+        })
 
         // create foreground for depth 
         this.add.image(0, 0, WORLD_ASSET_KEYS.WORLD_FOREGROUND, 0).setOrigin(0)
