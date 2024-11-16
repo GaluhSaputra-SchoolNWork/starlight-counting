@@ -8,6 +8,7 @@ import { TILED_COLLISION_LAYER_ALPHA, TILE_SIZE } from '../config.js'
 import { DATA_MANAGER_STORE_KEYS, dataManager } from '../utils/data-manager.js'
 import { getTargetPositionFromGameObjectPositionAndDirection } from '../utils/grid-utils.js'
 import { CANNOT_READ_SIGN_TEXT, SAMPLE_TEXT } from '../utils/text-utils.js'
+import { DialogUi } from '../world/dialog-ui.js'
 
 /**
  * @typedef TiledObjectProperty
@@ -33,6 +34,8 @@ export class WorldScene extends Phaser.Scene {
     #wildMonsterEncountered
     /** @type {Phaser.Tilemaps.ObjectLayer} */
     #signLayer
+    /** @type {DialogUi} */
+    #dialogUi
 
     constructor() {
         super({
@@ -118,6 +121,9 @@ export class WorldScene extends Phaser.Scene {
 
         this.#controls = new Controls(this)
 
+        // create dialog ui
+        this.#dialogUi = new DialogUi(this, 1280)
+
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 
@@ -132,7 +138,7 @@ export class WorldScene extends Phaser.Scene {
         }
         
         const selectedDirection = this.#controls.getDirectionKeyPressedDown()
-        if (selectedDirection !== DIRECTION.NONE) {
+        if (selectedDirection !== DIRECTION.NONE && !this.#isPlayerInputLocked()) {
             this.#player.moveCharacter(selectedDirection)
         }
 
@@ -144,6 +150,19 @@ export class WorldScene extends Phaser.Scene {
     }
 
     #handlePlayerInteraction() {
+        if (this.#dialogUi.isAnimationPlaying) {
+            return
+        }
+        if (this.#dialogUi.isVisible && !this.#dialogUi.moreMessagesToShow) {
+            this.#dialogUi.hideDialogModal()
+            return
+        }
+
+        if (this.#dialogUi.isVisible && this.#dialogUi.moreMessagesToShow) {
+            this.#dialogUi.showNextMessage()
+            return
+        }
+
         console.log('start of interaction check')
         // get player current direction and check 1 tile over in that direction to see if there is can be interacted with
         const {x, y} = this.#player.sprite
@@ -170,7 +189,7 @@ export class WorldScene extends Phaser.Scene {
             if (!usePlaceholderText) {
                 textToShow = msg || SAMPLE_TEXT
             }
-            console.log(textToShow)
+            this.#dialogUi.showDialogModal([textToShow])
             return
         }
     }
@@ -207,5 +226,9 @@ export class WorldScene extends Phaser.Scene {
                 this.scene.start(SCENE_KEYS.BATTLE_SCENE)
             })
         }
+    }
+
+    #isPlayerInputLocked() {
+        return this.#dialogUi.isVisible
     }
 }
