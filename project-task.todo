@@ -58,8 +58,8 @@ World Scene Part 2:
   ✓ add interactive game objects @done(15 Nov 2024 10:54)
   ✓ dialog ui component @done(16 Nov 2024 14:00)
   ✓ add npcs @done(16 Nov 2024 16:49)
-  ☐ add npc dialog
-  ☐ add npc movement
+  ✓ add npc dialog @done(17 Nov 2024 06:57)
+  ✓ add npc movement @done(17 Nov 2024 07:16)
 
 Title Screen:
   ☐ create basic title screen
