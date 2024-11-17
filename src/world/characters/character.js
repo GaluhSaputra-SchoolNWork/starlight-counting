@@ -172,7 +172,10 @@ export class Character {
         const targetPosition = {...this._targetPosition}
         const updatedPosition = getTargetPositionFromGameObjectPositionAndDirection(targetPosition, this._direction)
 
-        return this.#doesPositionCollideWithCollisionLayer(updatedPosition) || this.#doesPositionCollideWithOtherCharacter(updatedPosition)
+        return (
+            this.#doesPositionCollideWithCollisionLayer(updatedPosition) || 
+            this.#doesPositionCollideWithOtherCharacter(updatedPosition)
+        )
     }
 
     /**
@@ -237,9 +240,12 @@ export class Character {
             return false
         }
 
+        // checks if the new position that this character wants to move to is the same position that another
+        // character is currently at, or was previously at and is moving towards currently
         const collidesWithACharacter = this._otherCharactersToCheckForCollisionWith.some((character) => {
             return (
-                (character._targetPosition.x === x && character._targetPosition.y === y) || (character._previousTargetPosition.x === x && character._previousTargetPosition.y === y)
+                (character._targetPosition.x === x && character._targetPosition.y === y) || 
+                (character._previousTargetPosition.x === x && character._previousTargetPosition.y === y)
             )
         })
         return collidesWithACharacter

@@ -16,7 +16,6 @@ export class DialogUi {
     #scene
     /** @type {number} */
     #padding
-
     /** @type {number} */
     #width
     /** @type {number} */
@@ -36,6 +35,10 @@ export class DialogUi {
     /** @type {string[]} */
     #messagesToShow
 
+    /**
+     * @param {Phaser.Scene} scene 
+     * @param {number} width 
+     */
     constructor(scene, width) {
         this.#scene = scene
         this.#padding = 90
@@ -44,7 +47,10 @@ export class DialogUi {
         this.#textAnimationPlaying = false
         this.#messagesToShow = []
 
-        const panel = this.#scene.add.rectangle( 0, 0, this.#width, this.#height, 0xede4f3, 0.9 ).setOrigin(0).setStrokeStyle(8, 0x905ac2, 1)
+        const panel = this.#scene.add
+            .rectangle( 0, 0, this.#width, this.#height, 0xede4f3, 0.9 )
+            .setOrigin(0)
+            .setStrokeStyle(8, 0x905ac2, 1)
         this.#container = this.#scene.add.container(0, 0, [panel])
         this.#uiText = this.#scene.add.text(18, 12, CANNOT_READ_SIGN_TEXT, {
             ...UI_TEXT_STYLE,

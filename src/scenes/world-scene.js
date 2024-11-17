@@ -130,6 +130,7 @@ export class WorldScene extends Phaser.Scene {
         // create npcs
         this.#createNPCs(map)
 
+        // create player and have camera focus on the player
         this.#player = new Player({
             scene: this,
             position: dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION),
@@ -188,6 +189,7 @@ export class WorldScene extends Phaser.Scene {
         if (this.#dialogUi.isAnimationPlaying) {
             return
         }
+
         if (this.#dialogUi.isVisible && !this.#dialogUi.moreMessagesToShow) {
             this.#dialogUi.hideDialogModal()
             if (this.#npcPlayerIsInteractingWith) {
@@ -239,6 +241,7 @@ export class WorldScene extends Phaser.Scene {
             nearbyNpc.isTalkingToPlayer = true
             this.#npcPlayerIsInteractingWith = nearbyNpc
             this.#dialogUi.showDialogModal(nearbyNpc.messages)
+            return
         }
     }
 
@@ -301,6 +304,7 @@ export class WorldScene extends Phaser.Scene {
             const pathObjects = layer.objects.filter((obj) => {
                 return obj.type === CUSTOM_TILED_TYPES.NPC_PATH
             })
+            /** @type {import('../world/characters/npc.js').NPCPath} */
             const npcPath = {
                 0: { x: npcObject.x, y: npcObject.y - TILE_SIZE }
             }
@@ -310,7 +314,6 @@ export class WorldScene extends Phaser.Scene {
                 }
                 npcPath[parseInt(obj.name, 10)] = { x: obj.x, y: obj.y - TILE_SIZE }
             })
-            console.log(npcPath)
 
             /** @type {string} */
             const npcFrame = 
@@ -323,6 +326,7 @@ export class WorldScene extends Phaser.Scene {
                     (property) => property.name === TILED_NPC_PROPERTY.MESSAGES
                 )?.value || ''
             const npcMessages = npcMessagesString.split('::')
+            /** @type {import('../world/characters/npc.js').NpcMovementPattern} */
             const npcMovement =
                 /** @type {TiledObjectProperty[]} */ npcObject.properties.find(
                     (property) => property.name === TILED_NPC_PROPERTY.MOVEMENT_PATTERN
