@@ -8,11 +8,12 @@ import { exhaustiveGuard } from '../utils/guard.js'
 import { NineSlice } from '../utils/nine-slice.js'
 
 /** @type {Phaser.Types.GameObjects.Text.TextStyle} */
-export const MENU_TEXT_STYLE = Object.freeze({
+const MENU_TEXT_STYLE = Object.freeze({
     fontFamily: KENNEY_FUTURE_NARROW_FONT_NAME,
     color: '#4D4A49',
     fontSize: '30px',
 })
+
 const PLAYER_INPUT_CURSOR_POSITION = Object.freeze({
     x: 150,
     y: 41,
@@ -52,7 +53,7 @@ export class TitleScene extends Phaser.Scene {
         this.#nineSliceMenu = new NineSlice({
             cornerCutSize: 32,
             textureManager: this.sys.textures,
-            assetKey: UI_ASSET_KEYS.MENU_BACKGROUND
+            assetKeys: [UI_ASSET_KEYS.MENU_BACKGROUND]
         })
     }
 
@@ -69,7 +70,7 @@ export class TitleScene extends Phaser.Scene {
 
         // create menu
         const menuBgWidth = 500
-        const menuBgContainer = this.#nineSliceMenu.createNineSliceContainer(this, menuBgWidth, 200)
+        const menuBgContainer = this.#nineSliceMenu.createNineSliceContainer(this, menuBgWidth, 200, UI_ASSET_KEYS.MENU_BACKGROUND)
         const newGameText = this.add.text(menuBgWidth / 2, 40, 'New Game', MENU_TEXT_STYLE).setOrigin(0.5)
         const continueText = this.add.text(menuBgWidth / 2, 90, 'Continue', MENU_TEXT_STYLE).setOrigin(0.5)
         if (!this.#isContinueButtonEnabled) {
@@ -107,7 +108,7 @@ export class TitleScene extends Phaser.Scene {
             }
 
             if (this.#selectedMenuOption === MAIN_MENU_OPTIONS.OPTIONS) {
-                this.scene.start(SCENE_KEYS.WORLD_SCENE)
+                this.scene.start(SCENE_KEYS.OPTIONS_SCENE)
                 return
             }
         })
