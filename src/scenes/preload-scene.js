@@ -15,6 +15,7 @@ import { SCENE_KEYS } from './scene-keys.js'
 import { KENNEY_FUTURE_NARROW_FONT_NAME } from '../assets/font-keys.js'
 import { WebFontFileLoader } from '../assets/web-font-file-loader.js'
 import { DataUtils } from '../utils/data-utils.js'
+import { dataManager } from '../utils/data-manager.js'
 
 export class PreloadScene extends Phaser.Scene {
     constructor() {
@@ -123,7 +124,8 @@ export class PreloadScene extends Phaser.Scene {
     create() {
         console.log(`[${PreloadScene.name}:create] invoked`)
         this.#createAnimation()
-        this.scene.start(SCENE_KEYS.OPTIONS_SCENE)
+        dataManager.loadData()
+        this.scene.start(SCENE_KEYS.TITLE_SCENE)
     }
 
     #createAnimation() {
